@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="theme-color" content="#0ea5e9"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="Trialectique"/>
+<title>Trialectique — Sujet Objet Projet</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --sky:#0ea5e9;--sky-dark:#0284c7;--sky-deeper:#0369a1;
+  --sky-light:#e0f2fe;--sky-mid:#bae6fd;--sky-soft:#f0f9ff;
+  --bg:#f0f9ff;--card:#fff;--card2:#f8fafc;
+  --text:#0c4a6e;--text2:#0369a1;--text3:#64748b;
+  --border:#bae6fd;--border2:#7dd3fc;
+  --green:#059669;--red:#dc2626;--orange:#d97706;--purple:#7c3aed;
+}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;font-size:16px}
+.app{max-width:600px;margin:0 auto;padding:20px 16px 40px;min-height:100vh}
+h1{font-size:1.6rem;font-weight:800;text-align:center;color:var(--sky-deeper);margin-bottom:4px}
+h2{font-size:1.15rem;font-weight:700;color:var(--sky-deeper);margin-bottom:8px}
+.sub{color:var(--text3);font-size:.875rem;margin-bottom:12px;line-height:1.5}
+.card{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:18px;margin-bottom:14px}
+.card2{background:var(--sky-soft);border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px}
+.btn{width:100%;padding:16px;border:none;border-radius:16px;font-size:1rem;font-weight:700;cursor:pointer;transition:.15s;display:block;text-align:center}
+.btn:active{transform:scale(.98)}
+.btn-primary{background:linear-gradient(135deg,var(--sky),var(--sky-deeper));color:#fff;box-shadow:0 4px 14px rgba(14,165,233,.3)}
+.btn-secondary{background:var(--card);color:var(--sky-deeper);border:1.5px solid var(--border2)}
+.btn-secondary:hover{background:var(--sky-light)}
+.btn-success{background:linear-gradient(135deg,#10b981,#059669);color:#fff}
+.btn-danger{background:#fef2f2;color:var(--red);border:1.5px solid #fecaca;font-size:.875rem}
+.btn:disabled{opacity:.4;cursor:default;transform:none}
+.btn-sm{padding:8px 16px;font-size:.8rem;border-radius:12px;border:1.5px solid var(--border2);background:var(--card);color:var(--sky-deeper);cursor:pointer;font-weight:600}
+.btn-add{background:var(--sky);color:#fff;border:none;border-radius:12px;padding:10px 18px;cursor:pointer;font-weight:700;font-size:.875rem;white-space:nowrap}
+textarea{width:100%;background:var(--sky-soft);border:1.5px solid var(--border);border-radius:14px;padding:14px;color:var(--text);font-size:1rem;resize:none;outline:none;font-family:inherit;line-height:1.6;transition:.15s}
+textarea:focus{border-color:var(--sky);box-shadow:0 0 0 3px rgba(14,165,233,.15)}
+input[type=range]{width:100%;accent-color:var(--sky);margin:10px 0}
+.text-input{width:100%;background:var(--sky-soft);border:1.5px solid var(--border);border-radius:12px;padding:12px 14px;color:var(--text);font-size:.95rem;outline:none;font-family:inherit;transition:.15s}
+.text-input:focus{border-color:var(--sky);box-shadow:0 0 0 3px rgba(14,165,233,.15)}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:7px 14px;border-radius:20px;font-size:.8rem;cursor:pointer;margin:3px;border:1.5px solid var(--border);font-weight:600;transition:.15s}
+.tag-off{background:var(--card);color:var(--text2)}
+.tag-off:hover{background:var(--sky-light);border-color:var(--sky)}
+.tag-on{background:var(--sky);color:#fff;border-color:var(--sky)}
+.progress-wrap{margin-bottom:18px}
+.progress-header{display:flex;justify-content:space-between;font-size:.75rem;color:var(--text3);margin-bottom:6px;font-weight:600}
+.progress-bar{background:var(--sky-mid);border-radius:99px;height:8px;overflow:hidden}
+.progress-fill{height:8px;border-radius:99px;background:linear-gradient(90deg,var(--sky),var(--sky-deeper));transition:width .4s ease}
+.ai-box{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1.5px solid #93c5fd;border-radius:14px;padding:14px;margin-bottom:14px;font-size:.875rem}
+.ai-label{font-size:.7rem;color:#1d4ed8;margin-bottom:6px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.ai-text{color:#1e3a5f;white-space:pre-wrap;line-height:1.6}
+.ai-use{background:none;border:none;color:#2563eb;font-size:.75rem;text-decoration:underline;cursor:pointer;margin-top:6px;font-weight:600}
+.nav-row{display:flex;gap:12px;margin-top:20px}
+.nav-row .btn{flex:1}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.stat-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:14px;text-align:center}
+.stat-val{font-size:1.6rem;font-weight:800}
+.record-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;transition:.15s}
+.record-card:hover{border-color:var(--sky);background:var(--sky-soft)}
+.record-date{font-size:.75rem;color:var(--text3);margin-bottom:4px;font-weight:600}
+.record-pensee{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--text)}
+.record-meta{font-size:.8rem;color:var(--text2);margin-top:6px}
+.home-btn{width:100%;padding:18px 20px;border-radius:18px;font-size:1rem;font-weight:700;cursor:pointer;margin-bottom:12px;text-align:left;display:flex;align-items:center;gap:12px;transition:.15s;border:none}
+.home-btn:hover{transform:translateY(-1px)}
+.home-btn-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0}
+.section-title{font-size:.85rem;font-weight:700;margin:16px 0 8px;color:var(--text2);text-transform:uppercase;letter-spacing:.05em}
+.api-input{background:var(--sky-soft);border:1.5px solid var(--border);border-radius:12px;padding:12px;color:var(--text);width:100%;font-size:.9rem;outline:none;margin-bottom:8px;font-family:inherit}
+.back-btn{background:none;border:none;color:var(--text2);font-size:.875rem;cursor:pointer;margin-bottom:18px;display:flex;align-items:center;gap:6px;font-weight:600;padding:0}
+.italic{font-style:italic;color:var(--text2)}
+.wrap{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}
+.pulse{animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.label{font-size:.8rem;color:var(--text2);margin-bottom:6px;display:block;font-weight:600}
+.strong{color:var(--sky-deeper);font-weight:700}
+.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}
+.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}
+.green{color:var(--green)}.orange{color:var(--orange)}.red{color:var(--red)}
+.badge{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.7rem;font-weight:700}
+.badge-blue{background:var(--sky-light);color:var(--sky-deeper)}
+.badge-green{background:#d1fae5;color:#065f46}
+.badge-purple{background:#ede9fe;color:#5b21b6}
+.badge-orange{background:#fef3c7;color:#92400e}
+.divider{height:1px;background:var(--border);margin:16px 0}
+.norme-card{background:var(--sky-soft);border:1.5px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px;cursor:pointer;transition:.15s}
+.norme-card:hover{border-color:var(--sky);background:var(--sky-light)}
+.norme-hint{font-size:.7rem;color:var(--sky);margin-top:4px;font-weight:600}
+.header-badge{background:linear-gradient(135deg,var(--sky-light),var(--sky-mid));border-radius:16px;padding:16px;text-align:center;margin-bottom:24px;border:1.5px solid var(--border)}
+.suggest-item{background:var(--card);border:1.5px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px;cursor:pointer;transition:.15s;display:flex;align-items:flex-start;gap:10px}
+.suggest-item:hover{border-color:var(--sky);background:var(--sky-soft)}
+.suggest-item.selected{border-color:var(--sky);background:var(--sky-light)}
+.suggest-check{width:20px;height:20px;border-radius:6px;border:2px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.7rem;margin-top:2px}
+.suggest-check.on{background:var(--sky);border-color:var(--sky);color:#fff}
+.dash-card{background:var(--card);border:1.5px solid var(--border);border-radius:18px;padding:16px;margin-bottom:14px}
+.dash-stat{background:linear-gradient(135deg,var(--sky-soft),var(--sky-light));border:1.5px solid var(--border);border-radius:16px;padding:16px;text-align:center}
+.dash-stat-val{font-size:2rem;font-weight:800;color:var(--sky-deeper)}
+.dash-stat-label{font-size:.75rem;color:var(--text3);font-weight:600;margin-top:2px}
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.bar-label{font-size:.75rem;color:var(--text2);width:120px;flex-shrink:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bar-track{flex:1;background:var(--sky-mid);border-radius:99px;height:10px;overflow:hidden}
+.bar-fill{height:10px;border-radius:99px;background:linear-gradient(90deg,var(--sky),var(--sky-deeper));transition:width .5s ease}
+.bar-count{font-size:.75rem;color:var(--text3);width:24px;text-align:right;font-weight:700}
+.insight-card{background:linear-gradient(135deg,#eff6ff,#dbeafe);border:1.5px solid #93c5fd;border-radius:14px;padding:14px;margin-bottom:10px}
+.insight-text{font-size:.875rem;color:#1e3a5f;line-height:1.5}
+.timeline-item{display:flex;gap:12px;margin-bottom:14px}
+.timeline-dot{width:10px;height:10px;border-radius:50%;background:var(--sky);flex-shrink:0;margin-top:5px}
+.timeline-content{flex:1}
+.emotion-pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.72rem;font-weight:700;margin:2px;background:var(--sky-light);color:var(--sky-deeper)}
+
+/* ===== TRACKER STYLES ===== */
+.tracker-tabs{display:flex;gap:8px;margin-bottom:14px}
+.tracker-tab{flex:1;padding:10px;border-radius:12px;border:1.5px solid var(--border);font-weight:700;font-size:.875rem;cursor:pointer;transition:.15s}
+.tracker-tab-on{background:var(--sky-deeper);color:#fff;border-color:var(--sky-deeper)}
+.tracker-tab-off{background:var(--card);color:var(--sky-deeper)}
+.nav-month{display:flex;align-items:center;justify-content:space-between;background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:10px 14px;margin-bottom:12px}
+.nav-btn{background:var(--sky-light);border:none;border-radius:10px;padding:6px 14px;font-weight:700;color:var(--sky-deeper);cursor:pointer;font-size:1rem}
+.nav-label{font-weight:800;color:var(--sky-deeper);font-size:1rem}
+.stats-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px}
+.stat-card-mini{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:10px 6px;text-align:center}
+.stat-val-mid{font-size:1.3rem;font-weight:800}
+.stat-label-sm{font-size:.68rem;color:var(--text3);font-weight:600}
+.table-wrap{overflow-x:auto;border-radius:16px;border:1.5px solid var(--border);background:var(--card);margin-bottom:10px}
+table{border-collapse:collapse;width:100%}
+thead tr{background:linear-gradient(135deg,var(--sky-deeper),var(--sky))}
+th{padding:8px 2px;text-align:center;color:#fff;font-size:.7rem;font-weight:600;min-width:28px}
+th.habit-col{text-align:left;padding:10px 12px;min-width:160px;position:sticky;left:0;background:var(--sky-deeper);z-index:2}
+th.score-col{min-width:56px}
+td.habit-col{padding:7px 12px;font-weight:600;font-size:.78rem;color:var(--text);position:sticky;left:0;z-index:1;border-right:1.5px solid var(--border);white-space:nowrap}
+td.score-col{padding:4px 8px;text-align:center}
+td.day-cell{text-align:center;padding:3px 2px}
+tr.even td.habit-col{background:var(--sky-soft)}
+tr.odd td.habit-col{background:var(--card)}
+tr.even{background:var(--sky-soft)}
+tr.odd{background:var(--card)}
+tr.footer-row{background:var(--sky-light);border-top:2px solid var(--border)}
+tr.footer-row td.habit-col{background:var(--sky-light);font-weight:700;font-size:.78rem;color:var(--sky-deeper)}
+.check-btn{width:24px;height:24px;border-radius:7px;border:none;display:flex;align-items:center;justify-content:center;margin:0 auto;transition:.15s;font-size:.65rem;font-weight:900;color:#fff}
+.check-on{background:var(--sky);cursor:pointer}
+.check-off{background:var(--sky-light);cursor:pointer}
+.check-future{background:#f8fafc;cursor:default;opacity:.25}
+td.today-col{background:var(--sky-light)}
+th.today-col{background:var(--sky-deeper)!important;font-weight:900}
+.score-mini{font-size:.72rem;font-weight:700}
+.score-bar-mini{background:var(--sky-light);border-radius:99px;height:4px;margin-top:2px;overflow:hidden}
+.score-bar-fill{height:4px;border-radius:99px}
+.hint{text-align:center;color:#94a3b8;font-size:.7rem;margin-top:8px;margin-bottom:16px}
+
+/* ===== CARTOGRAPHIE STYLES ===== */
+.carto-tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+.carto-tab{padding:8px 14px;border-radius:20px;font-size:.78rem;font-weight:700;cursor:pointer;border:1.5px solid var(--border);transition:.15s;white-space:nowrap}
+.carto-tab-on{background:var(--sky);color:#fff;border-color:var(--sky)}
+.carto-tab-off{background:var(--card);color:var(--text2)}
+.carto-row{background:var(--card);border:1.5px solid var(--border);border-radius:14px;padding:14px;margin-bottom:10px;cursor:pointer;transition:.15s}
+.carto-row:hover{border-color:var(--sky);background:var(--sky-soft)}
+.carto-row-title{font-weight:700;color:var(--text);font-size:.9rem;margin-bottom:4px}
+.carto-row-meta{font-size:.75rem;color:var(--text2)}
+.carto-status{display:inline-block;padding:3px 10px;border-radius:99px;font-size:.7rem;font-weight:700;margin-left:8px}
+.carto-status-review{background:#fef3c7;color:#92400e}
+.carto-status-done{background:#d1fae5;color:#065f46}
+.carto-status-blank{background:var(--sky-light);color:var(--sky-deeper)}
+.carto-detail-field{margin-bottom:12px}
+.carto-detail-label{font-size:.75rem;font-weight:700;color:var(--text2);margin-bottom:4px;display:block;text-transform:uppercase;letter-spacing:.04em}
+.carto-detail-value{font-size:.9rem;color:var(--text);line-height:1.6;background:var(--sky-soft);border-radius:10px;padding:10px 12px;border:1px solid var(--border)}
+.carto-btn-link{background:linear-gradient(135deg,var(--sky),var(--sky-deeper));color:#fff;border:none;border-radius:12px;padding:10px 16px;font-size:.8rem;font-weight:700;cursor:pointer;margin-top:8px;display:inline-block}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:10px}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-label{font-size:.75rem;font-weight:700;color:var(--text2)}
+.form-input{background:var(--sky-soft);border:1.5px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--text);font-size:.875rem;outline:none;font-family:inherit;transition:.15s}
+.form-input:focus{border-color:var(--sky);box-shadow:0 0 0 3px rgba(14,165,233,.15)}
+select.form-input{cursor:pointer}
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+
+/* ===== PROJETS STYLES ===== */
+.projet-card{background:var(--card);border:1.5px solid var(--border);border-radius:16px;padding:16px;margin-bottom:12px;cursor:pointer;transition:.15s;position:relative;overflow:hidden}
+.projet-card:hover{border-color:var(--sky);background:var(--sky-soft)}
+.projet-card-accent{position:absolute;left:0;top:0;bottom:0;width:4px;border-radius:4px 0 0 4px}
+.projet-cat-badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:.7rem;font-weight:700;margin-bottom:8px}
+.projet-title{font-weight:700;color:var(--text);font-size:.95rem;margin-bottom:4px;line-height:1.4}
+.projet-desc{font-size:.8rem;color:var(--text3);line-height:1.5;margin-bottom:8px}
+.projet-footer{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:6px}
+.projet-statut{display:inline-flex;align-items:center;gap:4px;padding:4px 12px;border-radius:99px;font-size:.72rem;font-weight:700;cursor:pointer;border:none;transition:.15s}
+.statut-encours{background:#dbeafe;color:#1d4ed8}
+.statut-pause{background:#fef3c7;color:#92400e}
+.statut-termine{background:#d1fae5;color:#065f46}
+.statut-todo{background:var(--sky-light);color:var(--sky-deeper)}
+.projet-link-badge{font-size:.7rem;color:var(--text3);background:var(--sky-soft);padding:3px 8px;border-radius:99px;border:1px solid var(--border)}
+.projet-filter-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.projet-filter{padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:700;cursor:pointer;border:1.5px solid var(--border);transition:.15s;background:var(--card);color:var(--text2)}
+.projet-filter-on{background:var(--sky);color:#fff;border-color:var(--sky)}
+.cat-colors{
+  "cognitif":"#dbeafe|#1d4ed8",
+  "relationnel":"#fce7f3|#9d174d",
+  "situation":"#fef3c7|#92400e",
+  "construction":"#d1fae5|#065f46",
+  "autre":"#ede9fe|#5b21b6"
+}
+/* ===== HUMEUR & CORRÉLATIONS ===== */
+.humeur-btn{width:40px;height:40px;border-radius:12px;border:2px solid var(--border);background:var(--card);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;flex-shrink:0}
+.humeur-btn-on{border-color:var(--sky);background:var(--sky-light);transform:scale(1.1)}
+.humeur-row{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.corr-dot{width:12px;height:12px;border-radius:50%;display:inline-block;margin-right:4px;flex-shrink:0}
+.corr-row{display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:10px 12px;background:var(--sky-soft);border-radius:12px;border:1px solid var(--border)}
+.corr-label{font-size:.8rem;font-weight:600;color:var(--text);flex:1}
+.corr-val{font-size:.9rem;font-weight:800}
+.heatmap-cell{width:18px;height:18px;border-radius:4px;display:inline-block;margin:1px;cursor:pointer;transition:.15s}
+.heatmap-cell:hover{transform:scale(1.2)}
+.week-label{font-size:.65rem;color:var(--text3);width:18px;text-align:center;margin:1px}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const CARTE_DEFAULT={
+  valeurs:["Travail","Respect","Famille","Discipline","Amour","Effort","Détermination"],
+  forces:["Persévérant","Discipliné","Physique travaillé par le sport","Curieux","Intelligent","Déterminé","Ambitieux","Empathique"],
+  reussites:["70 jours sans alcool depuis février","Sportif — 5 séances/semaine","54 livres lus l'année passée","Lecteur quotidien à haute voix","Fonctionnaire des Nations Unies","A combattu et combat la dépression","Construit sa propre maison","Créé son propre outil TCC","Appris à parler en public","Se construit chaque jour par la discipline"],
+  croyances:["Je suis capable — je le prouve chaque jour","J'ai du respect pour moi-même","Je suis fier de moi","Je fais ce que je dis","Je peux tenir un engagement","Je peux m'en sortir","L'opinion des autres ne m'arrête pas","Les pressions internes ne m'arrêtent pas"],
+  engagements:["Me construire émotionnellement, physiquement, intellectuellement","Fonder une famille","Être en santé mentale et physique","Construire ma carrière","Investir dans mes passions"],
+  fiertes:[],obstacles:[],competences:[],phrases:[]
+};
+
+const DISTORSION_DATA={
+  "Tout ou rien":{questions:["Y a-t-il des nuances que tu ignores ?","Sur une échelle de 0 à 100, où se situe vraiment cette situation ?","Est-ce vraiment tout noir ou tout blanc ?"],normes:["La réalité existe rarement en termes absolus — elle est faite de nuances.","L'échec partiel n'est pas un échec total."],besoins:["Tolérance à l'ambiguïté","Flexibilité mentale","Acceptation de l'imperfection"],contreArgs:["La situation contient des nuances que cette pensée ignore complètement.","Penser en absolus déforme la réalité — la vérité est plus nuancée."],actions:["Écrire 3 nuances de la situation sur papier","Respirer profondément et reformuler en termes nuancés"],projets:["Travailler la tolérance à l'incertitude par la méditation","Tenir un journal des nuances observées chaque semaine"]},
+  "Surgénéralisation":{questions:["Cette situation s'est-elle vraiment passée à chaque fois ?","Quelles sont les exceptions à cette règle que tu t'imposes ?","Un seul événement peut-il définir une règle universelle ?"],normes:["Un événement isolé ne constitue pas une règle universelle.","Les exceptions existent toujours — les ignorer fausse le jugement."],besoins:["Pensée nuancée","Ouverture aux exceptions","Recul sur les événements"],contreArgs:["Un seul événement ne fait pas une règle — c'est une erreur de logique.","Des contre-exemples existent et prouvent que cette généralisation est fausse."],actions:["Lister 3 contre-exemples à cette pensée","Rappeler un souvenir où le contraire s'est passé"],projets:["Pratiquer la pensée critique quotidiennement","Lire sur les biais cognitifs pour mieux les reconnaître"]},
+  "Filtre négatif":{questions:["Qu'est-ce qui s'est bien passé que tu ne mentionnes pas ?","Pourquoi ton attention se fixe-t-elle uniquement sur le négatif ?","Si tu notais objectivement cette situation, quel score lui donnerais-tu ?"],normes:["Une situation contient toujours des éléments positifs et négatifs.","Un jugement équilibré prend en compte l'ensemble des faits."],besoins:["Reconnaissance du positif","Équilibre émotionnel","Gratitude"],contreArgs:["Cette pensée filtre uniquement le négatif en ignorant ce qui va bien.","La réalité est plus équilibrée que ce que cette voix présente."],actions:["Écrire immédiatement 3 choses positives de la situation","Pratiquer 2 min de gratitude"],projets:["Tenir un journal de gratitude quotidien","Pratiquer le scan positif chaque soir avant de dormir"]},
+  "Dévalorisation du positif":{questions:["Pourquoi minimises-tu ce qui s'est bien passé ?","Si quelqu'un d'autre avait réussi ça, dirais-tu que c'est sans importance ?","Quelle preuve as-tu que ce positif ne compte pas ?"],normes:["Les réussites méritent d'être reconnues au même titre que les échecs.","Ce qui est bien accompli a une valeur réelle, indépendamment du contexte."],besoins:["Reconnaissance de soi","Estime de soi","Validation interne"],contreArgs:["Minimiser le positif n'est pas de la lucidité — c'est une distorsion.","Chaque réussite, petite ou grande, mérite d'être reconnue."],actions:["Dire à voix haute : 'J'ai réussi cela et c'est réel'","Ajouter cet accomplissement à ta carte de valeur"],projets:["Construire une pratique régulière de reconnaissance des réussites","Tenir un journal de victoires hebdomadaires"]},
+  "Lecture des pensées":{questions:["As-tu demandé directement à cette personne ce qu'elle pense vraiment ?","Quelle preuve concrète as-tu de ce que tu supposes ?","Projettes-tu tes propres craintes sur cette personne ?"],normes:["Personne ne peut lire dans les pensées des autres.","Une supposition n'est pas un fait — seule la vérification compte."],besoins:["Communication directe","Confiance relationnelle","Clarification"],contreArgs:["Tu interprètes sans preuve — c'est une construction mentale, pas un fait.","La seule façon de savoir ce que l'autre pense, c'est de lui demander directement."],actions:["Poser directement la question à la personne concernée","Écrire ce que tu supposes vs ce qui est prouvé"],projets:["Travailler la communication directe et assertive","Pratiquer la vérification des suppositions avant d'agir"]},
+  "Prédiction négative":{questions:["Quelle est la probabilité réelle que le pire se produise ?","Combien de fois as-tu prédit le pire et ça ne s'est pas passé ainsi ?","Quels scénarios positifs ou neutres sont possibles ?"],normes:["Le futur est incertain — les prédictions négatives ne sont pas des faits.","Les issues positives sont aussi probables que les négatives."],besoins:["Tolérance à l'incertitude","Confiance en l'avenir","Lâcher-prise"],contreArgs:["Une prédiction n'est pas un fait — le futur reste ouvert.","Tu as survécu à chaque situation difficile que tu as prédite jusqu'ici."],actions:["Écrire 3 scénarios positifs ou neutres possibles","Rappeler une situation où ta prédiction négative s'est avérée fausse"],projets:["Pratiquer la méditation de pleine conscience pour rester dans le présent","Tenir un journal des prédictions vs réalité pour réduire le biais"]},
+  "Catastrophisme":{questions:["Quelle est la pire chose réaliste qui puisse arriver ?","Dans 5 ans, est-ce que ça aura encore autant d'importance ?","As-tu déjà traversé des situations difficiles et t'en es sorti ?"],normes:["Exagérer la gravité augmente la souffrance sans changer les faits.","La capacité humaine à s'adapter est généralement sous-estimée."],besoins:["Confiance en sa résilience","Perspective temporelle","Calme"],contreArgs:["Tu as traversé des épreuves bien plus difficiles et tu t'en es sorti.","Le pire scénario est rarement ce qui se passe réellement."],actions:["Exercice de respiration 4-7-8 pendant 3 minutes","Écrire : 'J'ai déjà surmonté X, je peux surmonter cela aussi'"],projets:["Pratiquer la désensibilisation progressive aux situations anxiogènes","Développer une pratique de régulation émotionnelle quotidienne"]},
+  "Raisonnement émotionnel":{questions:["Ce que tu ressens est-il une preuve de ce qui est vrai ?","Peux-tu trouver des faits objectifs qui contredisent ce que tu ressens ?","Tes émotions t'informent-elles ou te trompent-elles ici ?"],normes:["Une émotion est une information, pas une vérité absolue.","Les faits existent indépendamment de ce qu'on ressent."],besoins:["Différenciation émotion/fait","Régulation émotionnelle","Ancrage dans les faits"],contreArgs:["Ressentir quelque chose intensément ne le rend pas vrai.","Les faits existent indépendamment de tes émotions du moment."],actions:["Lister 3 faits objectifs qui contredisent ce ressenti","Nommer l'émotion : 'Je ressens X, mais ce n'est pas un fait'"],projets:["Pratiquer la pleine conscience pour observer les émotions sans les croire","Travailler la régulation émotionnelle avec la TCC"]},
+  "Les « je dois »":{questions:["Qui a décidé de cette règle que tu t'imposes ?","Que se passe-t-il réellement si tu ne la respectes pas ?","Cette règle est-elle flexible ou rigide — et pourquoi ?"],normes:["Les règles rigides créent de la souffrance inutile.","La flexibilité est une force, pas une faiblesse."],besoins:["Flexibilité","Auto-compassion","Libération des règles rigides"],contreArgs:["Cette règle est une construction, pas une loi universelle — tu peux la remettre en question.","La flexibilité face à ses propres règles est un signe de maturité, pas de faiblesse."],actions:["Remplacer 'je dois' par 'je choisirais idéalement' dans la phrase","Écrire d'où vient cette règle et si elle est encore valide aujourd'hui"],projets:["Identifier et remettre en question ses règles rigides en TCC","Pratiquer l'auto-compassion comme antidote au perfectionnisme"]},
+  "Étiquetage":{questions:["Est-ce qu'une action définit totalement qui tu es ?","Utiliserais-tu cette étiquette pour définir quelqu'un d'autre dans la même situation ?","Quelle est la différence entre 'j'ai fait une erreur' et 'je suis un raté' ?"],normes:["Un être humain ne peut pas être réduit à une seule action ou caractéristique.","Les erreurs font partie de l'apprentissage — elles ne définissent pas l'identité."],besoins:["Identité stable","Séparation acte/personne","Estime de soi"],contreArgs:["Tu es bien plus que cette erreur ou ce moment — ton identité est multiple et complexe.","Confondre ce qu'on fait avec ce qu'on est est une des distorsions les plus destructrices."],actions:["Écrire 5 qualités qui définissent ton identité au-delà de cet événement","Ouvrir ta carte de valeur et relire tes réussites"],projets:["Construire une identité solide et stable indépendante des erreurs","Pratiquer la séparation acte/personne dans la vie quotidienne"]},
+  "Personnalisation":{questions:["Quels autres facteurs ont contribué à cette situation ?","As-tu vraiment le contrôle total sur ce qui s'est passé ?","Est-il juste de te tenir entièrement responsable ?"],normes:["La plupart des situations sont influencées par de multiples facteurs.","La responsabilité se partage — elle n'appartient pas toujours à une seule personne."],besoins:["Juste attribution des responsabilités","Réduction de la culpabilité excessive","Lâcher-prise"],contreArgs:["Tu n'es pas la seule cause de cette situation — d'autres facteurs ont joué un rôle.","Prendre toute la responsabilité est injuste envers toi-même."],actions:["Lister tous les facteurs externes qui ont contribué à la situation","Écrire la part de responsabilité réelle vs supposée"],projets:["Travailler la juste attribution des responsabilités en thérapie","Pratiquer le lâcher-prise sur ce qui dépasse ton contrôle"]}
+};
+
+const DISTORSIONS=Object.keys(DISTORSION_DATA);
+const EMOTIONS=["Anxieux","Triste","En colère","Honteux","Coupable","Découragé","Frustré","Autre"];
+const COMPORTEMENTS=["Évitement","Isolement","Agressivité","Procrastination","Rumination","Impulsivité","Autre"];
+const STEPS=["pensee","manifestation","norme","analyse","contrearguments","ecart","besoin","evaluation"];
+const STEP_LABELS={pensee:"Voix intérieure",manifestation:"Manifestation",norme:"Norme",analyse:"Analyse",contrearguments:"Contre-arguments",ecart:"Écart",besoin:"Besoins & Actions",evaluation:"Évaluation"};
+
+// ============================================================
+// CARTOGRAPHIE DATA
+// ============================================================
+const CARTO_CATS = [
+  {key:"situations", label:"🧨 Situations", icon:"🧨", desc:"Situations compliquées vécues"},
+  {key:"lieux",      label:"📍 Lieux",      icon:"📍", desc:"Lieux déclencheurs"},
+  {key:"groupes",    label:"👥 Groupes",    icon:"👥", desc:"Groupes de personnes"},
+  {key:"pensees",    label:"💭 Pensées",    icon:"💭", desc:"Pensées automatiques"},
+  {key:"paroles",    label:"🗣️ Paroles",   icon:"🗣️", desc:"Paroles entendues"},
+];
+
+const CARTO_DEFAULT = {
+  situations: [
+    {id:1, titre:"Au HCR en 2015", pensee:"Je vais me suicider", emotions:"Peur, pressions", comportements:"", commentaire:"A revoir", statut:"a-revoir"},
+    {id:2, titre:"Pendant la semaine des données en 2024 à l'hôtel Stardland", pensee:"", emotions:"Désespoir, anxiété", comportements:"", commentaire:"A revoir", statut:"a-revoir"},
+    {id:3, titre:"À la maison pendant le deuil de Mama Toutou", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:4, titre:"Pendant la période de chômage à Odza", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:5, titre:"La fin de la relation avec Minouche", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:6, titre:"À la chapelle de Messamendongo pendant le mariage de Hervé", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:7, titre:"Au carrefour des 3 statues", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:8, titre:"Au bar de Mvog Mbi", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:9, titre:"Au HCR, à l'atelier", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:10, titre:"Au Safari en 2015, la bordelle avec laquelle je voulais coucher", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:11, titre:"Situations à l'école secondaire, Mouf laid", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+  ],
+  lieux: [
+    {id:1, titre:"Odza / pharmacie / face salle de sport", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:2, titre:"Bar en face de Chico", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:3, titre:"Odza – Chez Gaëlle", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:4, titre:"Chez les Essama", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:5, titre:"Messamendongo en haut", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:6, titre:"Devant l'hôtel à côté de la chapelle", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:7, titre:"À Sanofi Aventis", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+  ],
+  groupes: [
+    {id:1, titre:"La famille paternelle / Le fils d'Atangana", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:2, titre:"La famille de Minouche (le père et la mère)", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:3, titre:"La belle-famille", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:4, titre:"Les camarades du Collège Vogt", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:5, titre:"Les gens de bonne famille", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:6, titre:"WhatsApp", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:7, titre:"Les chefs sur le plan professionnel", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:8, titre:"Les amis d'enfance", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:9, titre:"Les collègues de Yaoundé", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+  ],
+  pensees: [
+    {id:1, titre:"Tu es un looser", pensee:"Tu es un looser", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:2, titre:"Je vais me suicider", pensee:"Je vais me suicider", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:3, titre:"Je ne sais pas si je vais y arriver", pensee:"Je ne sais pas si je vais y arriver", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:4, titre:"Tu vas mourir seul et pauvre", pensee:"Tu vas mourir seul et pauvre", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:5, titre:"Regarde comment les autres sont en train de réussir", pensee:"Regarde comment les autres sont en train de réussir", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:6, titre:"Je dois montrer que je suis quelqu'un", pensee:"Je dois montrer que je suis quelqu'un", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:7, titre:"Tu dois te marier", pensee:"Tu dois te marier", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+  ],
+  paroles: [
+    {id:1, titre:"Tu es laid", pensee:"Tu es laid", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:2, titre:"Tu es un looser", pensee:"Tu es un looser", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:3, titre:"Tu es moche", pensee:"Tu es moche", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+    {id:4, titre:"Regarde comment les autres…", pensee:"", emotions:"", comportements:"", commentaire:"", statut:"blank"},
+  ]
+};
+
+// ============================================================
+// PROJETS DATA
+// ============================================================
+const PROJET_CATS = [
+  {key:"cognitif",   label:"🧠 Cognitif",      bg:"#dbeafe", color:"#1d4ed8", accent:"#3b82f6"},
+  {key:"relationnel",label:"👥 Relationnel",    bg:"#fce7f3", color:"#9d174d", accent:"#ec4899"},
+  {key:"situation",  label:"🧨 Situations",     bg:"#fef3c7", color:"#92400e", accent:"#f59e0b"},
+  {key:"construction",label:"🏗️ Construction de soi", bg:"#d1fae5", color:"#065f46", accent:"#10b981"},
+  {key:"autre",      label:"✨ Autre",           bg:"#ede9fe", color:"#5b21b6", accent:"#8b5cf6"},
+];
+const PROJET_STATUTS = [
+  {key:"todo",     label:"📋 À démarrer", cls:"statut-todo"},
+  {key:"encours",  label:"🔄 En cours",   cls:"statut-encours"},
+  {key:"pause",    label:"⏸️ Pausé",      cls:"statut-pause"},
+  {key:"termine",  label:"✅ Terminé",    cls:"statut-termine"},
+];
+
+const PROJETS_DEFAULT = [
+  // COGNITIF
+  {id:1,  titre:"Travailler la pensée 'Tu es un looser'",
+   desc:"Séances TCC dédiées + journal de preuves contraires. Chaque semaine, lister 3 preuves concrètes que cette pensée est fausse.",
+   cat:"cognitif", statut:"encours", priorite:"haute", lien:""},
+  {id:2,  titre:"Travailler la comparaison sociale",
+   desc:"Restructurer la pensée 'Regarde comment les autres réussissent'. Travailler l'ancrage dans ses propres valeurs et son propre rythme.",
+   cat:"cognitif", statut:"encours", priorite:"haute", lien:""},
+  {id:3,  titre:"Travailler la peur de mourir seul et pauvre",
+   desc:"Clarifier concrètement ce que signifient 'seul' et 'pauvre'. Construire un plan de vie concret qui contredit cette prédiction.",
+   cat:"cognitif", statut:"todo", priorite:"haute", lien:""},
+  {id:4,  titre:"Travailler l'identité indépendante du regard des autres",
+   desc:"Construire une identité solide basée sur ses valeurs et non sur l'approbation extérieure. Pratiquer la séparation acte/personne.",
+   cat:"cognitif", statut:"encours", priorite:"haute", lien:""},
+  {id:5,  titre:"Journal de preuves contraires hebdomadaire",
+   desc:"Chaque dimanche, noter 5 preuves que les pensées automatiques négatives sont fausses. Alimenter la carte de valeur.",
+   cat:"cognitif", statut:"todo", priorite:"moyenne", lien:""},
+  // RELATIONNEL
+  {id:6,  titre:"Travailler les déclencheurs liés à la famille paternelle",
+   desc:"Identifier les pensées automatiques activées par la famille paternelle. Préparer des contre-arguments solides avant les interactions.",
+   cat:"relationnel", statut:"todo", priorite:"haute", lien:""},
+  {id:7,  titre:"Travailler le deuil de la relation avec Minouche",
+   desc:"Acceptation de la fin de la relation. Identifier ce que cette relation a appris, ce qui reste, et comment avancer.",
+   cat:"relationnel", statut:"todo", priorite:"haute", lien:""},
+  {id:8,  titre:"Travailler les figures d'autorité professionnelle",
+   desc:"Identifier les distorsions activées avec les chefs. Travailler l'assertivité et la communication directe en contexte professionnel.",
+   cat:"relationnel", statut:"todo", priorite:"moyenne", lien:""},
+  {id:9,  titre:"Protocole pour les interactions avec les 'gens de bonne famille'",
+   desc:"Préparer des ancrages cognitifs avant les situations déclenchantes. Se rappeler de sa carte de valeur et de ses réussites concrètes.",
+   cat:"relationnel", statut:"todo", priorite:"moyenne", lien:""},
+  // SITUATIONS
+  {id:10, titre:"Travailler le déclencheur HCR 2015 avec un professionnel",
+   desc:"La pensée suicidaire de 2015 mérite un travail approfondi avec un thérapeute. Ce n'est pas à traiter seul.",
+   cat:"situation", statut:"todo", priorite:"haute", lien:""},
+  {id:11, titre:"Protocole pour les lieux à risque (bars, lieux associés)",
+   desc:"Identifier les lieux déclencheurs. Préparer un protocole d'action : ancrage, respiration, contact de soutien.",
+   cat:"situation", statut:"encours", priorite:"haute", lien:""},
+  {id:12, titre:"Travailler la semaine des données 2024 (hôtel Stardland)",
+   desc:"Analyser en séance TCC ce qui s'est passé. Identifier les distorsions, les besoins non satisfaits, les leçons.",
+   cat:"situation", statut:"todo", priorite:"moyenne", lien:""},
+  {id:13, titre:"Travailler le deuil de Mama Toutou",
+   desc:"Identifier comment ce deuil a affecté les croyances et pensées automatiques. Travail de deuil structuré.",
+   cat:"situation", statut:"todo", priorite:"haute", lien:""},
+  // CONSTRUCTION DE SOI
+  {id:14, titre:"Continuer sans alcool → objectif 6 mois puis 1 an",
+   desc:"Capitaliser sur les 70 jours acquis. Fixer des jalons : 100 jours, 6 mois, 1 an. Célébrer chaque palier.",
+   cat:"construction", statut:"encours", priorite:"haute", lien:""},
+  {id:15, titre:"Fonder une famille — clarifier concrètement ce projet",
+   desc:"Écrire ce que 'fonder une famille' signifie concrètement. Quelles étapes ? Quel profil de partenaire ? Quel délai ?",
+   cat:"construction", statut:"todo", priorite:"haute", lien:""},
+  {id:16, titre:"Construire une pratique de régulation émotionnelle quotidienne",
+   desc:"Méditation active 10 min + 5 min d'écriture chaque matin. Tenir le cap 90 jours consécutifs.",
+   cat:"construction", statut:"encours", priorite:"haute", lien:""},
+  {id:17, titre:"Développer une pratique de gratitude quotidienne",
+   desc:"Chaque soir avant de dormir, noter 3 choses positives de la journée. Contrebalancer le filtre négatif.",
+   cat:"construction", statut:"todo", priorite:"moyenne", lien:""},
+  {id:18, titre:"Construire son projet professionnel post-ONU",
+   desc:"Identifier les compétences acquises, les certifications en cours, et définir la prochaine étape de carrière claire.",
+   cat:"construction", statut:"encours", priorite:"haute", lien:""},
+];
+
+// HABITS (Tracker)
+const HABITS = [
+  "Sans alcool","Pas de pornographie","Pas de masturbation","Pas de cigarettes",
+  "Prière du matin","Exercice sur l'esprit critique","Sport (séance faite)","Méditation active (10-15 min)",
+  "Lecture à voix basse (5mn)","Écriture (min 10 min)","Lecture à haute voix (30mn au moins)",
+  "Certifications (30mn)","Créatine prise","Prise de la whey"
+];
+
+const MONTHS=["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août","Septembre","Octobre","Novembre","Décembre"];
+
+// ============================================================
+// STATE
+// ============================================================
+function loadCarte(){try{const s=localStorage.getItem("tcc_carte");if(s)return JSON.parse(s);}catch{}return JSON.parse(JSON.stringify(CARTE_DEFAULT));}
+function saveCarte(){localStorage.setItem("tcc_carte",JSON.stringify(state.carte));}
+function loadRecords(){try{return JSON.parse(localStorage.getItem("tcc_records")||"[]");}catch{return[];}}
+function saveRecords(r){localStorage.setItem("tcc_records",JSON.stringify(r));}
+function loadCarto(){try{const s=localStorage.getItem("tcc_carto");if(s)return JSON.parse(s);}catch{}return JSON.parse(JSON.stringify(CARTO_DEFAULT));}
+function saveCarto(){localStorage.setItem("tcc_carto",JSON.stringify(state.carto));}
+function loadProjets(){try{const s=localStorage.getItem("tcc_projets");if(s)return JSON.parse(s);}catch{}return JSON.parse(JSON.stringify(PROJETS_DEFAULT));}
+function saveProjets(){localStorage.setItem("tcc_projets",JSON.stringify(state.projets));}
+function loadHumeur(){try{return JSON.parse(localStorage.getItem("tcc_humeur")||"{}");}catch{return{};}}
+function saveHumeur(){localStorage.setItem("tcc_humeur",JSON.stringify(state.humeur));}
+
+const today=new Date();
+const TOD={y:today.getFullYear(),m:today.getMonth(),d:today.getDate()};
+
+let state={
+  view:"home",step:"pensee",
+  form:emptyForm(),
+  records:loadRecords(),
+  carte:loadCarte(),
+  carto:loadCarto(),
+  projets:loadProjets(),
+  humeur:loadHumeur(),
+  projetFilter:"all",
+  projetCatFilter:"all",
+  projetDetail:null,
+  projetEdit:null,
+  cartoTab:"situations",
+  cartoDetail:null,
+  cartoEdit:null,
+  cartoNew:false,
+  selected:null,
+  ai:{loading:false,field:null},
+  apiKey:localStorage.getItem("tcc_apikey")||"",
+  trackerView:"tracker",
+  trackerYear:TOD.y,
+  trackerMonth:TOD.m,
+  trackerData:{},
+  trackerAllData:{},
+};
+
+loadTrackerMonth();
+
+function emptyForm(){
+  return{pensee:"",convictionAvant:80,distorsions:[],emotions:[],comportements:[],intensiteInit:50,
+    norme:"",questions:[],reponses:{},
+    carteSelections:[],contreSelections:[],contrearguments:"",contreAI:"",
+    ecart:"",ecartAI:"",
+    besoinSelections:[],besoins:"",
+    actionSelections:[],action:"",
+    projetSelections:[],projet:"",
+    convictionApres:80,intensiteApres:50,noteLibre:""};
+}
+
+// ============================================================
+// TRACKER HELPERS
+// ============================================================
+function daysInMonth(y,m){return new Date(y,m+1,0).getDate();}
+function storageKey(y,m){return "habits_"+y+"_"+m;}
+function pctColor(p){if(p>=80)return "#059669";if(p>=50)return "#d97706";if(p>0)return "#0ea5e9";return "#cbd5e1";}
+
+function loadTrackerMonth(){
+  try{const raw=localStorage.getItem(storageKey(state.trackerYear,state.trackerMonth));state.trackerData=raw?JSON.parse(raw):{};} catch(e){state.trackerData={};}
+}
+function loadAllTrackerData(){
+  state.trackerAllData={};
+  for(let y=2024;y<=TOD.y+1;y++){for(let mo=0;mo<12;mo++){try{const raw=localStorage.getItem(storageKey(y,mo));if(raw)state.trackerAllData[storageKey(y,mo)]=JSON.parse(raw);}catch(e){}}}
+}
+function saveTrackerMonth(){localStorage.setItem(storageKey(state.trackerYear,state.trackerMonth),JSON.stringify(state.trackerData));}
+
+function toggleHabit(habit,day){
+  const isFuture=state.trackerYear>TOD.y||(state.trackerYear===TOD.y&&state.trackerMonth>TOD.m)||(state.trackerYear===TOD.y&&state.trackerMonth===TOD.m&&day>TOD.d);
+  if(isFuture)return;
+  const key=habit+"_"+day;
+  state.trackerData[key]=!state.trackerData[key];
+  saveTrackerMonth();render();
+}
+function prevTrackerMonth(){if(state.trackerMonth===0){state.trackerYear--;state.trackerMonth=11;}else state.trackerMonth--;loadTrackerMonth();render();}
+function nextTrackerMonth(){if(state.trackerMonth===11){state.trackerYear++;state.trackerMonth=0;}else state.trackerMonth++;loadTrackerMonth();render();}
+function setTrackerView(v){state.trackerView=v;if(v==="dashboard"||v==="correlations")loadAllTrackerData();render();}
+
+// Humeur helpers
+const HUMEUR_EMOJIS=["😭","😢","😟","😕","😐","🙂","😊","😄","😁","🤩"];
+const HUMEUR_LABELS=["Terrible","Très mal","Mal","Pas bien","Neutre","Bien","Assez bien","Bien","Très bien","Excellent"];
+
+function humeurKey(y,m,d){return `${y}-${String(m+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;}
+function setHumeur(y,m,d,score){
+  const k=humeurKey(y,m,d);
+  if(state.humeur[k]?.score===score){delete state.humeur[k];}
+  else{state.humeur[k]={score,date:new Date(y,m,d).toISOString()};}
+  saveHumeur();render();
+}
+function getHumeurColor(score){
+  if(score>=8)return"#059669";
+  if(score>=6)return"#0ea5e9";
+  if(score>=4)return"#d97706";
+  return"#dc2626";
+}
+
+// Correlation computation
+function computeCorrelations(){
+  loadAllTrackerData();
+  // Build day-level data: date -> {habitCount, humeur}
+  const days=[];
+  const allKeys=new Set([...Object.keys(state.trackerAllData)]);
+  allKeys.forEach(mk=>{
+    const mdata=state.trackerAllData[mk];
+    const parts=mk.split("_");const y=parseInt(parts[1]),mo=parseInt(parts[2]);
+    const dmax=daysInMonth(y,mo);
+    for(let d=1;d<=dmax;d++){
+      // don't include future days
+      if(y>TOD.y||(y===TOD.y&&mo>TOD.m)||(y===TOD.y&&mo===TOD.m&&d>TOD.d))continue;
+      const hk=humeurKey(y,mo,d);
+      const humScore=state.humeur[hk]?.score;
+      const habitCount=HABITS.filter(h=>!!mdata[h+"_"+d]).length;
+      if(humScore!==undefined){
+        days.push({y,mo,d,habitCount,humScore,pct:Math.round(habitCount/HABITS.length*100)});
+      }
+    }
+  });
+
+  // Group by habit bracket: 0-25%, 26-50%, 51-75%, 76-100%
+  const brackets=[
+    {label:"0–25%",min:0,max:25,days:[],color:"#dc2626"},
+    {label:"26–50%",min:26,max:50,days:[],color:"#d97706"},
+    {label:"51–75%",min:51,max:75,days:[],color:"#0ea5e9"},
+    {label:"76–100%",min:76,max:100,days:[],color:"#059669"},
+  ];
+  days.forEach(day=>{
+    const b=brackets.find(br=>day.pct>=br.min&&day.pct<=br.max);
+    if(b)b.days.push(day.humScore);
+  });
+  brackets.forEach(b=>{b.avgHumeur=b.days.length>0?Math.round(b.days.reduce((a,v)=>a+v,0)/b.days.length*10)/10:null;});
+
+  // Per-habit correlation: days with habit done vs not done → avg humeur
+  const habitCorr=HABITS.map(h=>{
+    const withHabit=[],withoutHabit=[];
+    days.forEach(day=>{
+      const mk=storageKey(day.y,day.mo);
+      const mdata=state.trackerAllData[mk]||{};
+      if(mdata[h+"_"+day.d])withHabit.push(day.humScore);
+      else withoutHabit.push(day.humScore);
+    });
+    const avgWith=withHabit.length>0?Math.round(withHabit.reduce((a,v)=>a+v,0)/withHabit.length*10)/10:null;
+    const avgWithout=withoutHabit.length>0?Math.round(withoutHabit.reduce((a,v)=>a+v,0)/withoutHabit.length*10)/10:null;
+    const impact=avgWith!==null&&avgWithout!==null?Math.round((avgWith-avgWithout)*10)/10:null;
+    return{habit:h,avgWith,avgWithout,impact,n:withHabit.length};
+  }).filter(h=>h.impact!==null&&h.n>=3).sort((a,b)=>Math.abs(b.impact)-Math.abs(a.impact));
+
+  // TCC sessions correlation with previous week habits
+  const tccCorr=[];
+  state.records.forEach(r=>{
+    const d=new Date(r.date);
+    // Count habits in the 7 days before this session
+    let weekHabits=0,weekPossible=0;
+    for(let i=1;i<=7;i++){
+      const dd=new Date(d);dd.setDate(dd.getDate()-i);
+      const mk=storageKey(dd.getFullYear(),dd.getMonth());
+      const mdata=state.trackerAllData[mk]||{};
+      HABITS.forEach(h=>{weekPossible++;if(mdata[h+"_"+dd.getDate()])weekHabits++;});
+    }
+    const weekPct=weekPossible>0?Math.round(weekHabits/weekPossible*100):0;
+    const reduction=(r.convictionAvant||0)-(r.convictionApres||0);
+    tccCorr.push({weekPct,reduction,convBefore:r.convictionAvant,convAfter:r.convictionApres});
+  });
+
+  // Group TCC sessions by discipline level
+  const tccBrackets=[
+    {label:"Semaine < 40%",min:0,max:39,sessions:[],color:"#dc2626"},
+    {label:"Semaine 40–60%",min:40,max:60,sessions:[],color:"#d97706"},
+    {label:"Semaine 61–80%",min:61,max:80,sessions:[],color:"#0ea5e9"},
+    {label:"Semaine > 80%",min:81,max:100,sessions:[],color:"#059669"},
+  ];
+  tccCorr.forEach(s=>{
+    const b=tccBrackets.find(br=>s.weekPct>=br.min&&s.weekPct<=br.max);
+    if(b)b.sessions.push(s.reduction);
+  });
+  tccBrackets.forEach(b=>{b.avgReduction=b.sessions.length>0?Math.round(b.sessions.reduce((a,v)=>a+v,0)/b.sessions.length*10)/10:null;b.n=b.sessions.length;});
+
+  return{days,brackets,habitCorr,tccBrackets,total:days.length};
+}
+
+function getHabitScore(habit){const days=daysInMonth(state.trackerYear,state.trackerMonth);let count=0;for(let d=1;d<=days;d++){if(state.trackerData[habit+"_"+d])count++;}return count;}
+function getDayScore(day){let count=0;HABITS.forEach(h=>{if(state.trackerData[h+"_"+day])count++;});return count;}
+
+function calcDashboard(){
+  const habitTotals={},habitPossible={};const monthScores=[];
+  HABITS.forEach(h=>{habitTotals[h]=0;habitPossible[h]=0;});
+  Object.keys(state.trackerAllData).forEach(key=>{
+    const mdata=state.trackerAllData[key];const parts=key.split("_");const y=parseInt(parts[1]),mo=parseInt(parts[2]);
+    const d=daysInMonth(y,mo);let monthDone=0;const monthTotal=HABITS.length*d;
+    HABITS.forEach(h=>{habitPossible[h]+=d;for(let day=1;day<=d;day++){if(mdata[h+"_"+day]){habitTotals[h]++;monthDone++;}}});
+    const pct=Math.round((monthDone/monthTotal)*100);
+    monthScores.push({y,mo,pct,done:monthDone,total:monthTotal});
+  });
+  monthScores.sort((a,b)=>a.y!==b.y?a.y-b.y:a.mo-b.mo);
+  const sorted=HABITS.slice().sort((a,b)=>{const pa=habitPossible[a]>0?habitTotals[a]/habitPossible[a]:0;const pb=habitPossible[b]>0?habitTotals[b]/habitPossible[b]:0;return pb-pa;});
+  let streak=0;const dd=new Date(TOD.y,TOD.m,TOD.d);
+  for(let i=0;i<365;i++){const sy=dd.getFullYear(),sm=dd.getMonth(),sd=dd.getDate();const k=storageKey(sy,sm);const mdata=state.trackerAllData[k]||{};const perfect=HABITS.every(h=>!!mdata[h+"_"+sd]);if(perfect){streak++;dd.setDate(dd.getDate()-1);}else break;}
+  return{habitTotals,habitPossible,monthScores,streak,sorted};
+}
+
+// ============================================================
+// AI
+// ============================================================
+async function callAI(prompt){
+  if(!state.apiKey)throw new Error("no_key");
+  const res=await fetch("https://api.anthropic.com/v1/messages",{
+    method:"POST",
+    headers:{"Content-Type":"application/json","x-api-key":state.apiKey,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+    body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,messages:[{role:"user",content:prompt}]})
+  });
+  const data=await res.json();
+  if(data.error)throw new Error(data.error.message);
+  return data.content?.[0]?.text||"";
+}
+
+const CARTE_STR=()=>{const c=state.carte;return `Carte de valeur:\nValeurs: ${c.valeurs.join(", ")}\nForces: ${c.forces.join(", ")}\nRéussites: ${c.reussites.join(" | ")}\nCroyances: ${c.croyances.join(" | ")}\nEngagements: ${c.engagements.join(" | ")}`;};
+
+async function askAI(field){
+  state.ai={loading:true,field};render();
+  try{
+    const f=state.form;let prompt="";
+    if(field==="contre"){
+      const sel=f.carteSelections||[];
+      prompt=`Tu es thérapeute TCC bienveillant.\n${CARTE_STR()}\nÉléments sélectionnés: ${sel.join(" | ")}\nVoix: "${f.pensee}"\nDistorsions: ${f.distorsions.join(", ")}\nNorme: "${f.norme}"\n\nGénère 3 contre-arguments personnalisés puissants basés sur ces éléments. Direct, sans intro.`;
+    }else if(field==="ecart"){
+      prompt=`Tu es thérapeute TCC. Voix: "${f.pensee}". Norme: "${f.norme}". Contre-arguments: "${f.contrearguments}". Formule en 2-3 phrases l'écart entre la voix et la norme. Précis et direct.`;
+    }else if(field==="carto_analyse"){
+      const item=state.cartoEdit;
+      if(!item)return;
+      prompt=`Tu es thérapeute TCC bienveillant et expert en restructuration cognitive.\n${CARTE_STR()}\n\nSituation/déclencheur: "${item.titre}"\nPensée associée: "${item.pensee||'Non précisée'}"\nÉmotions: "${item.emotions||'Non précisées'}"\nComportements: "${item.comportements||'Non précisés'}"\n\nFais une analyse TCC brève et propose:\n1. La ou les distorsions cognitives probables\n2. Une norme objective pour cette situation\n3. Un contre-argument puissant basé sur la carte de valeur de Boris\n4. Une action immédiate concrète (5 min)\n5. Un projet de travail recommandé\n\nRéponds de façon directe, personnelle et bienveillante. Tu parles à Boris.`;
+    }
+    const result=await callAI(prompt);
+    if(field==="contre"){state.form.contreAI=result;}
+    else if(field==="ecart"){state.form.ecartAI=result;}
+    else if(field==="carto_analyse"){state.cartoAIResult=result;}
+  }catch(e){
+    if(e.message==="no_key")alert("⚙️ Entre ta clé API dans Paramètres.");
+    else alert("Erreur IA : "+e.message);
+  }
+  state.ai={loading:false,field:null};render();
+}
+
+// ============================================================
+// GENERAL HELPERS
+// ============================================================
+function setView(v){state.view=v;render();}
+function setStep(s){state.step=s;render();}
+function nextStep(){const i=STEPS.indexOf(state.step);if(i<STEPS.length-1)setStep(STEPS[i+1]);}
+function prevStep(){const i=STEPS.indexOf(state.step);if(i>0)setStep(STEPS[i-1]);}
+function setForm(k,v){state.form[k]=v;render();}
+function toggleArr(k,v){state.form[k]=state.form[k].includes(v)?state.form[k].filter(x=>x!==v):[...state.form[k],v];render();}
+function toggleSel(k,v){const arr=state.form[k]||[];state.form[k]=arr.includes(v)?arr.filter(x=>x!==v):[...arr,v];render();}
+
+function finalize(){
+  const f=state.form;
+  const contreAll=[...(f.contreSelections||[]),...(f.contrearguments?[f.contrearguments]:[])].join("\n");
+  const besoinAll=[...(f.besoinSelections||[]),...(f.besoins?[f.besoins]:[])].join(", ");
+  const actionAll=[...(f.actionSelections||[]),...(f.action?[f.action]:[])].join("\n");
+  const projetAll=[...(f.projetSelections||[]),...(f.projet?[f.projet]:[])].join("\n");
+  const record={...f,contrearguments:contreAll,besoins:besoinAll,action:actionAll,projet:projetAll,date:new Date().toISOString(),id:Date.now()};
+  state.records=[record,...state.records];
+  saveRecords(state.records);
+  state.form=emptyForm();state.step="pensee";state.view="home";render();
+}
+
+function addCarteItem(key){
+  const input=document.getElementById("carte_input_"+key);
+  const val=input?.value?.trim();if(!val)return;
+  if(!state.carte[key])state.carte[key]=[];
+  state.carte[key]=[...state.carte[key],val];
+  saveCarte();input.value="";render();
+}
+function removeCarteItem(key,idx){state.carte[key].splice(idx,1);saveCarte();render();}
+
+function exportTxt(){
+  const lines=state.records.map(r=>[`=== ${new Date(r.date).toLocaleDateString("fr-FR")} ===`,`VOIX: ${r.pensee}`,`CONVICTION: ${r.convictionAvant}% → ${r.convictionApres}%`,`DISTORSIONS: ${(r.distorsions||[]).join(", ")}`,`ÉMOTIONS: ${(r.emotions||[]).join(", ")}`,`NORME: ${r.norme}`,`CONTRE-ARGUMENTS: ${r.contrearguments}`,`ÉCART: ${r.ecart}`,`BESOINS: ${r.besoins}`,`ACTION: ${r.action}`,`PROJET: ${r.projet}`,`NOTE: ${r.noteLibre}`,""].join("\n")).join("\n");
+  dl(lines,"tcc.txt","text/plain");
+}
+function exportJson(){dl(JSON.stringify(state.records,null,2),"tcc.json","application/json");}
+function dl(content,name,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();}
+function esc(s){return(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+
+function progressBar(){
+  const idx=STEPS.indexOf(state.step);
+  const pct=Math.round(((idx+1)/STEPS.length)*100);
+  return `<div class="progress-wrap"><div class="progress-header"><span>${STEP_LABELS[state.step]}</span><span>${idx+1} / ${STEPS.length}</span></div><div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div></div>`;
+}
+function tags(arr,sel,key){return arr.map(t=>`<button class="tag ${sel.includes(t)?"tag-on":"tag-off"}" onclick="toggleArr('${key}','${t.replace(/'/g,"\\'")}')">${t}</button>`).join("");}
+function aiBox(text,field,onUseJs){
+  const loading=state.ai.loading&&state.ai.field===field;
+  if(!text&&!loading)return"";
+  return `<div class="ai-box"><div class="ai-label">✦ Suggestion IA</div>${loading?`<div class="ai-text pulse">Génération en cours...</div>`:`<div class="ai-text">${esc(text)}</div>${onUseJs?`<button class="ai-use" onclick="${onUseJs}">Utiliser →</button>`:""}`}</div>`;
+}
+function aiBtnTxt(f,l){return state.ai.loading&&state.ai.field===f?"⏳ Génération...":l;}
+function navRow(canNext=true){
+  const idx=STEPS.indexOf(state.step);const isLast=idx===STEPS.length-1;
+  return `<div class="nav-row">${idx>0?`<button class="btn btn-secondary" onclick="prevStep()">← Retour</button>`:""}${!isLast?`<button class="btn btn-primary" onclick="nextStep()" ${!canNext?"disabled":""}>Suivant →</button>`:`<button class="btn btn-success" onclick="finalize()">✅ Terminer la séance</button>`}</div>`;
+}
+
+function suggestList(items,selKey,placeholder){
+  const sel=state.form[selKey]||[];
+  return `<div class="mb8">${items.map(item=>`<div class="suggest-item ${sel.includes(item)?"selected":""}" onclick="toggleSel('${selKey}','${item.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')">
+<div class="suggest-check ${sel.includes(item)?"on":""}">${sel.includes(item)?"✓":""}</div>
+<div style="font-size:.875rem;color:var(--text);line-height:1.5">${esc(item)}</div>
+</div>`).join("")}</div>
+<div class="divider"></div>
+<span class="label">✏️ Ou écris le tien</span>
+<textarea rows="3" placeholder="${placeholder}" onblur="setForm('${selKey.replace("Selections","")}',this.value)">${esc(state.form[selKey.replace("Selections","")]||"")}</textarea>`;
+}
+
+// ============================================================
+// RENDER HOME
+// ============================================================
+function renderHome(){
+  const last=state.records[0];
+  const totalHabits=Object.values(state.trackerData).filter(v=>v).length;
+  const enCours=state.projets.filter(p=>p.statut==="encours").length;
+  const btns=[
+    {icon:"➕",label:"Nouvelle séance TCC",sub:"Démarrer une restructuration",cls:"btn-primary",action:"state.form=emptyForm();state.step='pensee';setView('new')",iconBg:"rgba(255,255,255,.2)",color:"#fff"},
+    {icon:"🎯",label:"Mes Projets",sub:`${enCours} projet(s) en cours`,cls:"btn-secondary",action:"setView('projets')",iconBg:"var(--sky-light)",color:"var(--sky-deeper)"},
+    {icon:"🗺️",label:"Cartographie",sub:"Situations, lieux, groupes, pensées",cls:"btn-secondary",action:"setView('cartographie')",iconBg:"var(--sky-light)",color:"var(--sky-deeper)"},
+    {icon:"📅",label:"Tracker Habitudes",sub:`${totalHabits} habitudes cochées ce mois`,cls:"btn-secondary",action:"setView('tracker')",iconBg:"var(--sky-light)",color:"var(--sky-deeper)"},
+    {icon:"📊",label:"Tableau de bord TCC",sub:`${state.records.length} séance(s)`,cls:"btn-secondary",action:"setView('dashboard')",iconBg:"var(--sky-light)",color:"var(--sky-deeper)"},
+    {icon:"📋",label:"Historique",sub:`${state.records.length} séance(s)`,cls:"btn-secondary",action:"setView('history')",iconBg:"var(--sky-light)",color:"var(--sky-deeper)"},
+    {icon:"🗺️",label:"Carte de valeur",sub:"Enrichir ma base personnelle",cls:"btn-secondary",action:"setView('carte')",iconBg:"var(--sky-light)",color:"var(--sky-deeper)"},
+    {icon:"⚙️",label:"Paramètres",sub:"Clé API et données",cls:"btn-secondary",action:"setView('settings')",iconBg:"var(--sky-light)",color:"var(--sky-deeper)"},
+  ];
+  return `<div class="header-badge"><div style="font-size:2rem;margin-bottom:6px">🧠</div>
+<h1 style="margin:0 0 2px;font-size:1.3rem">TRIALECTIQUE</h1>
+<div style="font-size:.8rem;color:var(--sky-deeper);font-weight:700;letter-spacing:.12em;margin-bottom:4px">SUJET · OBJET · PROJET</div>
+<div style="font-size:.72rem;color:var(--text3);font-style:italic">by Boris</div>
+</div>
+${btns.map(b=>`<button class="home-btn ${b.cls}" onclick="${b.action}" style="color:${b.color}"><div class="home-btn-icon" style="background:${b.iconBg}">${b.icon}</div><div><div style="font-weight:700">${b.label}</div><div style="font-size:.8rem;opacity:.7;font-weight:400">${b.sub}</div></div></button>`).join("")}
+${last?`<div class="section-title">Dernière séance</div><div class="record-card" onclick="state.selected=state.records[0];setView('detail')"><div class="record-date">${new Date(last.date).toLocaleDateString("fr-FR",{day:"numeric",month:"long"})}</div><div class="record-pensee">${esc(last.pensee)}</div><div class="record-meta">Conviction ${last.convictionAvant}% → ${last.convictionApres}%</div></div>`:""}`;
+}
+
+// ============================================================
+// RENDER CARTOGRAPHIE
+// ============================================================
+function renderCartographie(){
+  if(state.cartoEdit!==null){return renderCartoEditDetail();}
+  if(state.cartoDetail!==null){return renderCartoViewDetail();}
+
+  const tab=state.cartoTab;
+  const items=state.carto[tab]||[];
+  const catInfo=CARTO_CATS.find(c=>c.key===tab);
+
+  const done=items.filter(i=>i.statut==="done").length;
+  const review=items.filter(i=>i.statut==="a-revoir").length;
+  const blank=items.filter(i=>!i.statut||i.statut==="blank").length;
+
+  return `<button class="back-btn" onclick="setView('home')">← Retour</button>
+<div class="section-header"><h2>🧭 Cartographie TCC</h2></div>
+<p class="sub">Explore et travaille tes déclencheurs avec la méthode TCC. Chaque entrée peut être liée à une séance.</p>
+
+<div class="carto-tabs">
+${CARTO_CATS.map(c=>`<button class="carto-tab ${state.cartoTab===c.key?"carto-tab-on":"carto-tab-off"}" onclick="state.cartoTab='${c.key}';state.cartoDetail=null;state.cartoEdit=null;render()">${c.icon} ${c.label.split(" ").slice(1).join(" ")}</button>`).join("")}
+</div>
+
+<div class="card" style="padding:14px;margin-bottom:14px">
+<div style="font-weight:700;color:var(--sky-deeper);margin-bottom:8px">${catInfo.icon} ${catInfo.label}</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<span class="badge" style="background:#fef3c7;color:#92400e">⚠️ ${review} à revoir</span>
+<span class="badge badge-blue">📝 ${blank} à explorer</span>
+<span class="badge badge-green">✅ ${done} traité(s)</span>
+</div>
+</div>
+
+${items.map(item=>{
+  const statusLabel=item.statut==="a-revoir"?"⚠️ À revoir":item.statut==="done"?"✅ Traité":"📝 À explorer";
+  const statusCls=item.statut==="a-revoir"?"carto-status-review":item.statut==="done"?"carto-status-done":"carto-status-blank";
+  const hasContent=item.pensee||item.emotions||item.comportements;
+  return `<div class="carto-row" onclick="state.cartoDetail={cat:'${tab}',id:${item.id}};render()">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+<div class="carto-row-title">${esc(item.titre)}</div>
+<span class="carto-status ${statusCls}" style="white-space:nowrap;font-size:.68rem">${statusLabel}</span>
+</div>
+${hasContent?`<div class="carto-row-meta">${item.emotions?`❤️ ${esc(item.emotions.substring(0,50))}`:""} ${item.pensee?`💭 ${esc(item.pensee.substring(0,40))}`:""}</div>`:""}
+</div>`;
+}).join("")}
+
+<button class="btn btn-secondary mt16" style="border-style:dashed" onclick="cartoAddNew('${tab}')">+ Ajouter une entrée</button>`;
+}
+
+function renderCartoViewDetail(){
+  const {cat,id}=state.cartoDetail;
+  const items=state.carto[cat]||[];
+  const item=items.find(i=>i.id===id);
+  if(!item)return"";
+  const catInfo=CARTO_CATS.find(c=>c.key===cat);
+
+  const statusLabel=item.statut==="a-revoir"?"⚠️ À revoir":item.statut==="done"?"✅ Traité":"📝 À explorer";
+  const statusCls=item.statut==="a-revoir"?"carto-status-review":item.statut==="done"?"carto-status-done":"carto-status-blank";
+
+  const aiRes=state.cartoAIResult||"";
+
+  return `<button class="back-btn" onclick="state.cartoDetail=null;state.cartoAIResult=null;render()">← Retour à la cartographie</button>
+<div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+<div style="font-size:1.2rem">${catInfo.icon}</div>
+<div><div style="font-weight:800;color:var(--sky-deeper);font-size:1rem">${esc(item.titre)}</div>
+<span class="carto-status ${statusCls}">${statusLabel}</span></div>
+</div>
+
+${item.pensee?`<div class="carto-detail-field"><span class="carto-detail-label">💭 Pensée automatique</span><div class="carto-detail-value">${esc(item.pensee)}</div></div>`:""}
+${item.emotions?`<div class="carto-detail-field"><span class="carto-detail-label">❤️ Émotions / comportements</span><div class="carto-detail-value">${esc(item.emotions)}${item.comportements?" · "+esc(item.comportements):""}</div></div>`:""}
+${item.commentaire?`<div class="carto-detail-field"><span class="carto-detail-label">📝 Commentaire</span><div class="carto-detail-value">${esc(item.commentaire)}</div></div>`:""}
+
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+<button class="btn-sm" onclick="state.cartoEdit={cat:'${cat}',id:${id}};state.cartoAIResult=null;render()">✏️ Modifier</button>
+${item.pensee?`<button class="btn-sm" onclick="state.form=emptyForm();state.form.pensee='${item.pensee.replace(/'/g,"\\'")}';state.step='pensee';state.cartoDetail=null;setView('new')">🔄 Ouvrir en séance TCC</button>`:""}
+</div>
+
+<div class="card" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd">
+<div style="font-weight:700;color:#1d4ed8;margin-bottom:8px;font-size:.875rem">✦ Analyse IA de cette entrée</div>
+${aiRes?`<div style="font-size:.875rem;color:#1e3a5f;line-height:1.6;white-space:pre-wrap">${esc(aiRes)}</div>`:`<p style="font-size:.875rem;color:var(--text3);margin-bottom:10px">Génère une analyse TCC personnalisée basée sur ta carte de valeur.</p>
+<button class="btn btn-primary" onclick="state.cartoEdit={cat:'${cat}',id:${id},readonly:true};askAI('carto_analyse')" ${state.ai.loading?"disabled":""} style="padding:12px">${state.ai.loading&&state.ai.field==="carto_analyse"?"⏳ Génération...":"✦ Analyser avec l'IA"}</button>`}
+${state.ai.loading&&state.ai.field==="carto_analyse"?`<div class="ai-text pulse" style="font-size:.875rem">Analyse en cours...</div>`:""}
+</div>
+
+<button class="btn btn-danger mt12" onclick="cartoDelete('${cat}',${id})">🗑️ Supprimer cette entrée</button>`;
+}
+
+function renderCartoEditDetail(){
+  const {cat,id,readonly}=state.cartoEdit;
+  if(readonly){
+    // Triggered by AI but we stay on view detail after
+    return renderCartoViewDetail();
+  }
+  const items=state.carto[cat]||[];
+  const item=id?items.find(i=>i.id===id):null;
+  const isNew=!id;
+  const catInfo=CARTO_CATS.find(c=>c.key===cat);
+
+  // Read current form values from DOM IDs when saving
+  return `<button class="back-btn" onclick="state.cartoEdit=null;render()">← Annuler</button>
+<h2>${isNew?"Nouvelle entrée":"Modifier l'entrée"} · ${catInfo.icon} ${catInfo.label}</h2>
+
+<div class="card">
+<div class="form-group mb12">
+<label class="form-label">📌 Titre / Nom</label>
+<input id="ce_titre" class="form-input" type="text" value="${esc(item?item.titre:"")}" placeholder="Ex: Au bureau avec mon chef..."/>
+</div>
+<div class="form-group mb12">
+<label class="form-label">💭 Pensée automatique</label>
+<textarea id="ce_pensee" rows="3" class="form-input" placeholder="Ce que la voix intérieure dit dans cette situation...">${esc(item?item.pensee:"")}</textarea>
+</div>
+<div class="form-row">
+<div class="form-group">
+<label class="form-label">❤️ Émotions</label>
+<input id="ce_emotions" class="form-input" type="text" value="${esc(item?item.emotions:"")}" placeholder="Anxieux, Honteux..."/>
+</div>
+<div class="form-group">
+<label class="form-label">🎭 Comportements</label>
+<input id="ce_comportements" class="form-input" type="text" value="${esc(item?item.comportements:"")}" placeholder="Évitement, Isolement..."/>
+</div>
+</div>
+<div class="form-group mb12">
+<label class="form-label">📝 Commentaire</label>
+<input id="ce_commentaire" class="form-input" type="text" value="${esc(item?item.commentaire:"")}" placeholder="Notes personnelles..."/>
+</div>
+<div class="form-group mb16">
+<label class="form-label">📊 Statut</label>
+<select id="ce_statut" class="form-input">
+<option value="blank" ${(!item||item.statut==="blank")?"selected":""}>📝 À explorer</option>
+<option value="a-revoir" ${item&&item.statut==="a-revoir"?"selected":""}>⚠️ À revoir</option>
+<option value="done" ${item&&item.statut==="done"?"selected":""}>✅ Traité</option>
+</select>
+</div>
+<button class="btn btn-success" onclick="cartoSave('${cat}',${id||"null"})">💾 Sauvegarder</button>
+</div>`;
+}
+
+function cartoSave(cat,id){
+  const get=sid=>document.getElementById(sid)?.value||"";
+  const data={
+    titre:get("ce_titre"),pensee:get("ce_pensee"),emotions:get("ce_emotions"),
+    comportements:get("ce_comportements"),commentaire:get("ce_commentaire"),statut:get("ce_statut")
+  };
+  if(!data.titre.trim()){alert("Le titre est obligatoire.");return;}
+  if(!state.carto[cat])state.carto[cat]=[];
+  if(id){
+    const idx=state.carto[cat].findIndex(i=>i.id===id);
+    if(idx>=0)state.carto[cat][idx]={...state.carto[cat][idx],...data};
+    state.cartoEdit=null;
+    state.cartoDetail={cat,id};
+  }else{
+    const newId=Date.now();
+    state.carto[cat].push({id:newId,...data});
+    state.cartoEdit=null;
+    state.cartoDetail={cat,id:newId};
+  }
+  saveCarto();render();
+}
+
+function cartoAddNew(cat){
+  state.cartoEdit={cat,id:null};
+  state.cartoAIResult=null;
+  render();
+}
+
+function cartoDelete(cat,id){
+  if(!confirm("Supprimer cette entrée ?"))return;
+  state.carto[cat]=state.carto[cat].filter(i=>i.id!==id);
+  state.cartoDetail=null;saveCarto();render();
+}
+
+// ============================================================
+// RENDER TRACKER
+// ============================================================
+function renderTracker(){
+  const y=state.trackerYear,m=state.trackerMonth;
+  const days=daysInMonth(y,m);
+  const DAYS=[];for(let i=1;i<=days;i++)DAYS.push(i);
+  const isCurMonth=y===TOD.y&&m===TOD.m;
+
+  let totalDone=0;Object.values(state.trackerData).forEach(v=>{if(v)totalDone++;});
+  const totalPossible=HABITS.length*days;
+  const monthPct=Math.round((totalDone/totalPossible)*100);
+  const todayScore=isCurMonth?getDayScore(TOD.d):0;
+
+  let html="";
+  html+=`<div class="nav-month"><button class="nav-btn" onclick="prevTrackerMonth()">‹</button><span class="nav-label">${MONTHS[m]} ${y}</span><button class="nav-btn" onclick="nextTrackerMonth()">›</button></div>`;
+  html+=`<div class="stats-grid-3">
+<div class="stat-card-mini"><div class="stat-val-mid" style="color:${pctColor(monthPct)}">${totalDone}/${totalPossible}</div><div class="stat-label-sm">Cochées (${monthPct}%)</div></div>
+<div class="stat-card-mini"><div class="stat-val-mid" style="color:var(--sky-deeper)">${HABITS.length}</div><div class="stat-label-sm">Habitudes</div></div>
+<div class="stat-card-mini"><div class="stat-val-mid" style="color:var(--orange)">${isCurMonth?todayScore+"/"+HABITS.length:days}</div><div class="stat-label-sm">${isCurMonth?"Aujourd'hui":"Jours"}</div></div>
+</div>`;
+  html+=`<div class="progress-bar" style="margin-bottom:14px"><div class="progress-fill" style="width:${monthPct}%"></div></div>`;
+  html+=`<div class="table-wrap"><table><thead><tr><th class="habit-col">Habitude</th>`;
+  DAYS.forEach(d=>{const isT=isCurMonth&&d===TOD.d;html+=`<th class="${isT?"today-col":""}">${String(d).padStart(2,"0")}</th>`;});
+  html+=`<th class="score-col">Score</th></tr></thead><tbody>`;
+  HABITS.forEach((habit,hi)=>{
+    const score=getHabitScore(habit);const p=Math.round((score/days)*100);const rowCls=hi%2===0?"even":"odd";
+    html+=`<tr class="${rowCls}"><td class="habit-col">${esc(habit)}</td>`;
+    DAYS.forEach(d=>{
+      const checked=!!state.trackerData[habit+"_"+d];
+      const isToday=isCurMonth&&d===TOD.d;
+      const isFuture=y>TOD.y||(y===TOD.y&&m>TOD.m)||(y===TOD.y&&m===TOD.m&&d>TOD.d);
+      const btnCls=checked?"check-btn check-on":(isFuture?"check-btn check-future":"check-btn check-off");
+      html+=`<td class="day-cell${isToday?" today-col":""}"><button class="${btnCls}" onclick="toggleHabit('${habit.replace(/'/g,"\\'").replace(/"/g,"&quot;")}',${d})">${checked?"✓":""}</button></td>`;
+    });
+    html+=`<td class="score-col"><div class="score-mini" style="color:${pctColor(p)}">${score}/${days}<span style="font-size:.6rem;opacity:.7"> (${p}%)</span></div><div class="score-bar-mini"><div class="score-bar-fill" style="background:${pctColor(p)};width:${p}%"></div></div></td></tr>`;
+  });
+  html+=`<tr class="footer-row"><td class="habit-col">Score du jour</td>`;
+  DAYS.forEach(d=>{const s=getDayScore(d);const p=Math.round((s/HABITS.length)*100);const isToday=isCurMonth&&d===TOD.d;html+=`<td class="day-cell${isToday?" today-col":""}" style="text-align:center"><span class="score-mini" style="color:${pctColor(p)}">${s>0?s:""}</span></td>`;});
+  html+=`<td></td></tr>`;
+
+  // Humeur row
+  html+=`<tr style="background:#fef9c3;border-top:2px solid #fde047"><td class="habit-col" style="background:#fef9c3;color:#713f12;font-weight:700">😊 Humeur /10</td>`;
+  DAYS.forEach(d=>{
+    const isFuture=y>TOD.y||(y===TOD.y&&m>TOD.m)||(y===TOD.y&&m===TOD.m&&d>TOD.d);
+    const isToday=isCurMonth&&d===TOD.d;
+    const hk=humeurKey(y,m,d);
+    const score=state.humeur[hk]?.score;
+    const emoji=score!==undefined?HUMEUR_EMOJIS[score-1]:"·";
+    const color=score!==undefined?getHumeurColor(score):"#cbd5e1";
+    html+=`<td class="day-cell${isToday?" today-col":""}" style="text-align:center">`;
+    if(!isFuture){
+      html+=`<button onclick="showHumeurPicker(${y},${m},${d})" style="background:none;border:none;cursor:pointer;font-size:.9rem;line-height:1;color:${color};width:24px;height:24px;display:flex;align-items:center;justify-content:center;margin:0 auto;border-radius:6px;${score?"background:"+color+"22":""}">${emoji}</button>`;
+    }else{html+=`<span style="color:#e2e8f0;font-size:.7rem">·</span>`;}
+    html+=`</td>`;
+  });
+  html+=`<td class="score-col"><div class="score-mini" style="color:#713f12">${(()=>{const scores=DAYS.map(d=>{const hk=humeurKey(y,m,d);return state.humeur[hk]?.score;}).filter(s=>s!==undefined);return scores.length>0?(Math.round(scores.reduce((a,v)=>a+v,0)/scores.length*10)/10)+"/10":"—";})()}</div></td>`;
+  html+=`</tr>`;
+
+  html+=`</tbody></table></div>`;
+  html+=`<p class="hint">Appuie sur une case habitude pour cocher · Clique 😊 pour noter ton humeur · Navigue avec ‹ ›</p>`;
+
+  // Humeur picker modal
+  html+=`<div id="humeurModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
+<div style="background:var(--card);border-radius:20px 20px 0 0;padding:24px;width:100%;max-width:500px">
+<div style="font-weight:800;color:var(--sky-deeper);margin-bottom:4px;font-size:1rem" id="humeurModalTitle">Comment tu te sens ?</div>
+<div style="font-size:.8rem;color:var(--text3);margin-bottom:16px">Appuie sur l'emoji correspondant à ton humeur</div>
+<div style="display:grid;grid-template-columns:repeat(10,1fr);gap:6px;margin-bottom:16px" id="humeurGrid"></div>
+<div style="text-align:center;font-size:.8rem;color:var(--text3)" id="humeurSelLabel"></div>
+<button onclick="document.getElementById('humeurModal').style.display='none'" style="width:100%;margin-top:16px;padding:12px;border:none;border-radius:12px;background:var(--sky-light);color:var(--sky-deeper);font-weight:700;cursor:pointer">Fermer</button>
+</div></div>`;
+
+  return html;
+}
+
+function renderTrackerDashboard(){
+  const dash=calcDashboard();
+  let totalAllDone=0,totalAllPossible=0;
+  HABITS.forEach(h=>{totalAllDone+=dash.habitTotals[h];totalAllPossible+=dash.habitPossible[h];});
+  const globalPct=totalAllPossible>0?Math.round((totalAllDone/totalAllPossible)*100):0;
+
+  let html=`<div class="stats-grid-3">
+<div class="stat-card-mini"><div class="stat-val-mid" style="color:${pctColor(globalPct)}">${totalAllDone}/${totalAllPossible}</div><div class="stat-label-sm">Cochées (${globalPct}%)</div></div>
+<div class="stat-card-mini"><div class="stat-val-mid" style="color:var(--sky-deeper)">${HABITS.length}</div><div class="stat-label-sm">Habitudes</div></div>
+<div class="stat-card-mini"><div class="stat-val-mid" style="color:var(--orange)">${dash.streak}j</div><div class="stat-label-sm">Streak</div></div>
+</div>`;
+
+  if(dash.monthScores.length>0){
+    html+=`<div class="dash-card"><div class="dash-card-title">📅 Score par mois</div>`;
+    dash.monthScores.forEach(ms=>{html+=`<div class="bar-row"><div class="bar-label" style="width:110px">${MONTHS[ms.mo]} ${ms.y}</div><div class="bar-track"><div class="bar-fill" style="background:${pctColor(ms.pct)};width:${ms.pct}%"></div></div><div class="bar-count" style="color:${pctColor(ms.pct)};width:60px">${ms.done}/${ms.total} <span style="font-size:.65rem">(${ms.pct}%)</span></div></div>`;});
+    html+=`</div>`;
+  }
+
+  html+=`<div class="dash-card"><div class="dash-card-title">💪 Jours pratiqués (total cumulé)</div>`;
+  dash.sorted.forEach(h=>{
+    const p=dash.habitPossible[h]>0?Math.round((dash.habitTotals[h]/dash.habitPossible[h])*100):0;
+    html+=`<div style="margin-bottom:12px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
+<div style="font-size:.78rem;font-weight:600;color:var(--text);flex:1;padding-right:8px">${esc(h)}</div>
+<div style="font-size:.95rem;font-weight:800;color:${pctColor(p)};white-space:nowrap">${dash.habitTotals[h]} j <span style="font-size:.7rem;font-weight:500;color:var(--text3)">(${p}%)</span></div>
+</div>
+<div class="bar-track"><div class="bar-fill" style="background:${pctColor(p)};width:${p}%"></div></div>
+</div>`;
+  });
+  html+=`</div>`;
+
+  html+=`<div class="insight-card"><div style="font-weight:700;color:#1d4ed8;margin-bottom:10px;font-size:.9rem">💡 Insights</div>`;
+  if(totalAllPossible===0){html+=`<p class="insight-text">Complète des séances pour voir tes insights.</p>`;}
+  else{
+    if(dash.sorted.length>0){const best=dash.sorted[0];const bestP=dash.habitPossible[best]>0?Math.round((dash.habitTotals[best]/dash.habitPossible[best])*100):0;html+=`<p class="insight-text" style="margin-bottom:8px">🏆 Meilleure habitude : <strong>${esc(best)}</strong> — ${dash.habitTotals[best]} jours (${bestP}%)</p>`;}
+    if(dash.sorted.length>1){const worst=dash.sorted[dash.sorted.length-1];const worstP=dash.habitPossible[worst]>0?Math.round((dash.habitTotals[worst]/dash.habitPossible[worst])*100):0;html+=`<p class="insight-text" style="margin-bottom:8px">⚠️ À renforcer : <strong>${esc(worst)}</strong> — ${dash.habitTotals[worst]} jours (${worstP}%)</p>`;}
+    if(globalPct>=80)html+=`<p class="insight-text">🔥 ${totalAllDone}/${totalAllPossible} cases cochées (${globalPct}%) — discipline excellente.</p>`;
+    if(dash.streak>=7)html+=`<p class="insight-text">⚡ ${dash.streak} jours consécutifs parfaits — discipline réelle.</p>`;
+  }
+  html+=`</div>`;
+  return html;
+}
+
+function showHumeurPicker(y,m,d){
+  const modal=document.getElementById("humeurModal");
+  if(!modal)return;
+  const hk=humeurKey(y,m,d);
+  const current=state.humeur[hk]?.score;
+  const dateStr=new Date(y,m,d).toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long"});
+  document.getElementById("humeurModalTitle").textContent="Humeur du "+dateStr;
+  const grid=document.getElementById("humeurGrid");
+  grid.innerHTML=HUMEUR_EMOJIS.map((e,i)=>`
+<button onclick="setHumeur(${y},${m},${d},${i+1});document.getElementById('humeurModal').style.display='none'"
+  style="font-size:1.4rem;background:${current===i+1?"var(--sky-light)":"transparent"};border:2px solid ${current===i+1?"var(--sky)":"var(--border)"};border-radius:10px;padding:6px 4px;cursor:pointer;transition:.15s;display:flex;flex-direction:column;align-items:center;gap:2px">
+${e}<span style="font-size:.45rem;color:var(--text3);font-weight:600">${i+1}</span></button>`).join("");
+  document.getElementById("humeurSelLabel").textContent=current?"Humeur actuelle : "+HUMEUR_EMOJIS[current-1]+" "+HUMEUR_LABELS[current-1]+" ("+current+"/10)":"Aucune humeur notée";
+  modal.style.display="flex";
+}
+
+function renderCorrelations(){
+  const corr=computeCorrelations();
+
+  if(corr.total<5){
+    return `<div class="dash-card" style="text-align:center;padding:30px">
+<div style="font-size:2rem;margin-bottom:8px">📊</div>
+<div style="font-weight:700;color:var(--sky-deeper);margin-bottom:8px">Pas encore assez de données</div>
+<p class="sub" style="margin:0">Note ton humeur chaque jour dans le tracker pendant au moins 5 jours pour voir les corrélations.</p>
+</div>`;
+  }
+
+  let html=``;
+
+  // Humeur vs habitudes bracket chart
+  html+=`<div class="dash-card">
+<div class="dash-card-title">😊 Humeur moyenne selon le niveau de discipline</div>
+<p style="font-size:.78rem;color:var(--text3);margin-bottom:14px">Plus tu coches d'habitudes, comment évolue ton humeur ?</p>`;
+  const maxHumeur=Math.max(...corr.brackets.filter(b=>b.avgHumeur!==null).map(b=>b.avgHumeur),1);
+  corr.brackets.forEach(b=>{
+    if(b.avgHumeur===null){
+      html+=`<div class="corr-row"><span class="corr-dot" style="background:#e2e8f0"></span><span class="corr-label">${b.label}</span><span style="font-size:.75rem;color:var(--text3)">Pas assez de données</span></div>`;
+      return;
+    }
+    const barW=Math.round(b.avgHumeur/10*100);
+    html+=`<div style="margin-bottom:12px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+<span style="font-size:.8rem;font-weight:700;color:var(--text)">${b.label}</span>
+<span style="font-size:1rem;font-weight:800;color:${b.color}">${HUMEUR_EMOJIS[Math.round(b.avgHumeur)-1]} ${b.avgHumeur}/10</span>
+</div>
+<div class="bar-track"><div class="bar-fill" style="background:${b.color};width:${barW}%"></div></div>
+<div style="font-size:.7rem;color:var(--text3);margin-top:3px">${b.days.length} jour(s) avec humeur notée</div>
+</div>`;
+  });
+  html+=`</div>`;
+
+  // Per-habit impact
+  if(corr.habitCorr.length>0){
+    html+=`<div class="dash-card">
+<div class="dash-card-title">💪 Impact de chaque habitude sur l'humeur</div>
+<p style="font-size:.78rem;color:var(--text3);margin-bottom:14px">Différence d'humeur moyenne entre les jours où tu pratiques vs les jours où tu ne pratiques pas.</p>`;
+    corr.habitCorr.slice(0,8).forEach(h=>{
+      const color=h.impact>0?"#059669":h.impact<0?"#dc2626":"#94a3b8";
+      const sign=h.impact>0?"+":"";
+      html+=`<div style="margin-bottom:12px;padding:10px 12px;background:var(--sky-soft);border-radius:12px;border:1px solid var(--border)">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
+<span style="font-size:.8rem;font-weight:700;color:var(--text);flex:1;padding-right:8px">${esc(h.habit)}</span>
+<span style="font-size:.95rem;font-weight:800;color:${color};white-space:nowrap">${sign}${h.impact} pts</span>
+</div>
+<div style="display:flex;gap:12px;font-size:.72rem;color:var(--text3)">
+<span>✅ Avec : <strong style="color:${color}">${h.avgWith}/10</strong></span>
+<span>❌ Sans : <strong style="color:var(--text3)">${h.avgWithout}/10</strong></span>
+<span style="color:var(--text3)">(${h.n} jours)</span>
+</div>
+</div>`;
+    });
+    html+=`</div>`;
+  }
+
+  // TCC × discipline correlation
+  if(corr.tccBrackets.some(b=>b.n>0)){
+    html+=`<div class="dash-card">
+<div class="dash-card-title">🧠 Discipline de la semaine → efficacité TCC</div>
+<p style="font-size:.78rem;color:var(--text3);margin-bottom:14px">Réduction moyenne de conviction en séance TCC selon ton niveau de discipline la semaine précédente.</p>`;
+    corr.tccBrackets.forEach(b=>{
+      if(b.n===0){
+        html+=`<div class="corr-row"><span class="corr-dot" style="background:#e2e8f0"></span><span class="corr-label">${b.label}</span><span style="font-size:.75rem;color:var(--text3)">—</span></div>`;
+        return;
+      }
+      const isPositive=b.avgReduction>0;
+      html+=`<div style="margin-bottom:12px">
+<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
+<span style="font-size:.8rem;font-weight:700;color:var(--text)">${b.label}</span>
+<span style="font-size:1rem;font-weight:800;color:${b.color}">${isPositive?"−":"+"}${Math.abs(b.avgReduction)}% conviction</span>
+</div>
+<div style="background:var(--sky-mid);border-radius:99px;height:10px;overflow:hidden">
+<div style="height:10px;border-radius:99px;background:${b.color};width:${Math.min(Math.abs(b.avgReduction)*2,100)}%;transition:width .5s"></div>
+</div>
+<div style="font-size:.7rem;color:var(--text3);margin-top:3px">${b.n} séance(s)</div>
+</div>`;
+    });
+    html+=`<div class="insight-card" style="margin-top:8px"><div class="insight-text">
+${(()=>{
+  const best=corr.tccBrackets.filter(b=>b.avgReduction!==null&&b.n>0).sort((a,b2)=>b2.avgReduction-a.avgReduction)[0];
+  if(!best)return"Pas assez de données pour un insight.";
+  if(best.avgReduction>0)return`💡 Tes séances TCC sont plus efficaces quand ta semaine est disciplinée (${best.label}) — la conviction baisse de <strong>${best.avgReduction}%</strong> en moyenne.`;
+  return`💡 Complète plus de séances pour voir la corrélation entre discipline et efficacité TCC.`;
+})()}
+</div></div>`;
+    html+=`</div>`;
+  }
+
+  // Humeur heatmap last 60 days
+  html+=`<div class="dash-card">
+<div class="dash-card-title">🗓️ Humeur — 60 derniers jours</div>
+<div style="display:flex;flex-wrap:wrap;gap:2px;margin-top:8px">`;
+  for(let i=59;i>=0;i--){
+    const dd=new Date();dd.setDate(dd.getDate()-i);
+    const hk=humeurKey(dd.getFullYear(),dd.getMonth(),dd.getDate());
+    const score=state.humeur[hk]?.score;
+    const color=score!==undefined?getHumeurColor(score):"#e2e8f0";
+    const opacity=score!==undefined?(0.3+score/10*0.7).toFixed(2):1;
+    const title=`${dd.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})}${score!==undefined?" : "+score+"/10 "+HUMEUR_EMOJIS[score-1]:""}`;
+    html+=`<div class="heatmap-cell" style="background:${color};opacity:${opacity}" title="${title}"></div>`;
+  }
+  html+=`</div>
+<div style="display:flex;align-items:center;gap:6px;margin-top:10px;flex-wrap:wrap">
+<span style="font-size:.7rem;color:var(--text3)">Humeur :</span>
+<div style="display:flex;gap:4px;align-items:center">
+<div style="width:12px;height:12px;border-radius:3px;background:#dc2626"></div><span style="font-size:.68rem;color:var(--text3)">Bas</span>
+<div style="width:12px;height:12px;border-radius:3px;background:#d97706;margin-left:6px"></div><span style="font-size:.68rem;color:var(--text3)">Moyen</span>
+<div style="width:12px;height:12px;border-radius:3px;background:#0ea5e9;margin-left:6px"></div><span style="font-size:.68rem;color:var(--text3)">Bien</span>
+<div style="width:12px;height:12px;border-radius:3px;background:#059669;margin-left:6px"></div><span style="font-size:.68rem;color:var(--text3)">Excellent</span>
+<div style="width:12px;height:12px;border-radius:3px;background:#e2e8f0;margin-left:6px"></div><span style="font-size:.68rem;color:var(--text3)">Non noté</span>
+</div></div>
+</div>`;
+
+  return html;
+}
+
+function renderTrackerView(){
+  return `<button class="back-btn" onclick="setView('home')">← Retour</button>
+<h2 style="margin-bottom:12px">📅 Tracker Habitudes</h2>
+<div class="tracker-tabs">
+<button class="tracker-tab ${state.trackerView==="tracker"?"tracker-tab-on":"tracker-tab-off"}" onclick="setTrackerView('tracker')">📅 Tracker</button>
+<button class="tracker-tab ${state.trackerView==="dashboard"?"tracker-tab-on":"tracker-tab-off"}" onclick="setTrackerView('dashboard')">📊 Stats</button>
+<button class="tracker-tab ${state.trackerView==="correlations"?"tracker-tab-on":"tracker-tab-off"}" onclick="setTrackerView('correlations')">🔗 Corrélations</button>
+</div>
+${state.trackerView==="tracker"?renderTracker():state.trackerView==="dashboard"?renderTrackerDashboard():renderCorrelations()}`;
+}
+
+// ============================================================
+// RENDER TCC DASHBOARD
+// ============================================================
+function renderDashboard(){
+  const records=state.records;
+  if(records.length===0){
+    return `<button class="back-btn" onclick="setView('home')">← Retour</button>
+<h2>📊 Tableau de bord TCC</h2>
+<div class="card" style="text-align:center;padding:40px 20px"><div style="font-size:2rem;margin-bottom:8px">📭</div><p class="sub" style="margin:0">Complète ta première séance pour voir tes statistiques.</p></div>`;
+  }
+  const total=records.length;
+  const avgConvBefore=Math.round(records.reduce((a,r)=>a+(r.convictionAvant||0),0)/total);
+  const avgConvAfter=Math.round(records.reduce((a,r)=>a+(r.convictionApres||0),0)/total);
+  const avgReduction=avgConvBefore-avgConvAfter;
+  const lastWeek=records.filter(r=>Date.now()-new Date(r.date)<7*86400000).length;
+  const distCount={};records.forEach(r=>(r.distorsions||[]).forEach(d=>{distCount[d]=(distCount[d]||0)+1;}));
+  const sortedDist=Object.entries(distCount).sort((a,b)=>b[1]-a[1]).slice(0,6);
+  const maxDist=sortedDist[0]?.[1]||1;
+  const emoCount={};records.forEach(r=>(r.emotions||[]).forEach(e=>{emoCount[e]=(emoCount[e]||0)+1;}));
+  const sortedEmo=Object.entries(emoCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const last7=records.slice(0,7);
+  const insights=[];
+  if(sortedDist[0])insights.push(`Ta distorsion la plus fréquente est <strong>"${sortedDist[0][0]}"</strong> (${sortedDist[0][1]} fois). C'est le pattern principal à travailler.`);
+  if(avgReduction>0)insights.push(`En moyenne, ta conviction baisse de <strong>${avgReduction}%</strong> après chaque séance.`);
+  if(avgReduction<=0)insights.push(`Ta conviction ne baisse pas encore — approfondis l'étape contre-arguments.`);
+  if(sortedEmo[0])insights.push(`L'émotion dominante est <strong>"${sortedEmo[0][0]}"</strong>. Elle mérite un projet de régulation dédié.`);
+  if(total>=5&&lastWeek===0)insights.push(`Pas de séance cette semaine. La régularité est clé.`);
+  if(lastWeek>=3)insights.push(`${lastWeek} séances cette semaine — excellente régularité.`);
+
+  return `<button class="back-btn" onclick="setView('home')">← Retour</button>
+<h2>📊 Tableau de bord TCC</h2>
+<div class="stat-grid">
+<div class="dash-stat"><div class="dash-stat-val">${total}</div><div class="dash-stat-label">Séances totales</div></div>
+<div class="dash-stat"><div class="dash-stat-val">${lastWeek}</div><div class="dash-stat-label">Cette semaine</div></div>
+<div class="dash-stat"><div class="dash-stat-val">${avgConvBefore}%</div><div class="dash-stat-label">Conviction moy. avant</div></div>
+<div class="dash-stat" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0);border-color:#6ee7b7"><div class="dash-stat-val" style="color:#065f46">${avgConvAfter}%</div><div class="dash-stat-label" style="color:#065f46">Conviction moy. après</div></div>
+</div>
+${avgReduction>0?`<div class="card" style="background:linear-gradient(135deg,#d1fae5,#ecfdf5);border-color:#6ee7b7;text-align:center;padding:14px"><div style="font-size:1.8rem;font-weight:800;color:#065f46">− ${avgReduction}%</div><div style="font-size:.8rem;color:#059669;font-weight:600">Réduction moyenne de la conviction</div></div>`:""}
+<div class="dash-card"><h2 style="margin-bottom:12px">🔍 Distorsions les plus fréquentes</h2>
+${sortedDist.length===0?`<p class="sub">Pas encore de données.</p>`:sortedDist.map(([d,c])=>`<div class="bar-row"><div class="bar-label">${esc(d)}</div><div class="bar-track"><div class="bar-fill" style="width:${Math.round(c/maxDist*100)}%"></div></div><div class="bar-count">${c}</div></div>`).join("")}
+</div>
+<div class="dash-card"><h2 style="margin-bottom:12px">❤️ Émotions les plus fréquentes</h2>
+${sortedEmo.length===0?`<p class="sub">Pas encore de données.</p>`:`<div class="wrap">${sortedEmo.map(([e,c])=>`<span class="emotion-pill">${e} <strong>(${c})</strong></span>`).join("")}</div>`}
+</div>
+<div class="dash-card"><h2 style="margin-bottom:12px">💡 Insights</h2>${insights.map(i=>`<div class="insight-card"><div class="insight-text">${i}</div></div>`).join("")}</div>
+<div class="dash-card"><h2 style="margin-bottom:12px">🕐 Dernières séances</h2>
+${last7.map(r=>`<div class="timeline-item"><div class="timeline-dot"></div><div class="timeline-content">
+<div style="font-size:.75rem;color:var(--text3);font-weight:600">${new Date(r.date).toLocaleDateString("fr-FR",{day:"numeric",month:"long"})}</div>
+<div style="font-size:.875rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(r.pensee)}</div>
+<div style="font-size:.78rem;color:var(--text2);margin-top:2px">${(r.distorsions||[]).map(d=>`<span class="badge badge-blue">${esc(d)}</span>`).join(" ")} ${(r.emotions||[]).map(e=>`<span class="badge badge-purple">${esc(e)}</span>`).join(" ")}</div>
+<div style="font-size:.78rem;color:var(--green);margin-top:2px;font-weight:600">Conviction ${r.convictionAvant}% → ${r.convictionApres}%</div>
+</div></div>`).join("")}
+</div>`;
+}
+
+// ============================================================
+// RENDER CARTE / HISTORY / DETAIL / SETTINGS
+// ============================================================
+function renderCarte(){
+  const secs=[
+    {key:"valeurs",t:"⚡ Valeurs",p:"Ex : Honnêteté..."},
+    {key:"forces",t:"💪 Forces & Qualités",p:"Ex : Patient, Créatif..."},
+    {key:"reussites",t:"🏆 Réussites",p:"Ex : J'ai arrêté de fumer..."},
+    {key:"croyances",t:"🧠 Croyances positives",p:"Ex : Je suis capable..."},
+    {key:"engagements",t:"🎯 Engagements de vie",p:"Ex : Être présent pour ma famille..."},
+    {key:"fiertes",t:"🌟 Fiertés silencieuses",p:"Ex : J'ai aidé quelqu'un..."},
+    {key:"obstacles",t:"⛰️ Obstacles surmontés",p:"Ex : J'ai traversé la dépression..."},
+    {key:"competences",t:"🛠️ Compétences concrètes",p:"Ex : Parler en public..."},
+    {key:"phrases",t:"💬 Phrases d'ancrage",p:"Ex : Je tiens parce que je l'ai décidé..."},
+  ];
+  return `<button class="back-btn" onclick="setView('home')">← Retour</button><h2>🗺️ Ma Carte de Valeur</h2><p class="sub">Enrichis ta carte — elle nourrit tes contre-arguments TCC.</p>
+${secs.map(s=>{const items=state.carte[s.key]||[];return `<div class="card"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><span style="font-weight:700;color:var(--sky-deeper)">${s.t}</span><span class="badge badge-blue">${items.length}</span></div><div class="wrap">${items.map((x,i)=>`<span class="tag tag-on" style="font-size:.78rem">${esc(x)}<button onclick="removeCarteItem('${s.key}',${i})" style="background:rgba(255,255,255,.3);border:none;color:#fff;cursor:pointer;font-size:.7rem;width:16px;height:16px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-left:2px;padding:0">✕</button></span>`).join("")}${items.length===0?`<span style="color:var(--text3);font-size:.8rem;font-style:italic">Aucun élément encore</span>`:""}</div><div style="display:flex;gap:8px;margin-top:12px"><input id="carte_input_${s.key}" type="text" placeholder="${s.p}" class="text-input" style="flex:1" onkeydown="if(event.key==='Enter'){addCarteItem('${s.key}');}"/><button onclick="addCarteItem('${s.key}')" class="btn-add">+ Ajouter</button></div></div>`;}).join("")}`;
+}
+
+function renderHistory(){
+  return `<button class="back-btn" onclick="setView('home')">← Retour</button><h2>📋 Historique</h2>
+<div style="display:flex;gap:8px;margin-bottom:16px"><button class="btn-sm" onclick="exportTxt()">📄 TXT</button><button class="btn-sm" onclick="exportJson()">💾 JSON</button></div>
+${state.records.length===0?`<div class="card" style="text-align:center;padding:40px"><p class="sub" style="margin:0">Aucune séance encore.</p></div>`:""}
+${state.records.map(r=>`<div class="record-card" onclick="state.selected=state.records.find(x=>x.id===${r.id});setView('detail')"><div class="record-date">${new Date(r.date).toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})}</div><div class="record-pensee">${esc(r.pensee)}</div><div class="record-meta">${esc((r.distorsions||[]).slice(0,2).join(", ")||"—")} · Conviction ${r.convictionAvant}% → ${r.convictionApres}%</div></div>`).join("")}`;
+}
+
+function renderDetail(){
+  const r=state.selected;if(!r)return"";
+  const fields=[
+    {l:"💭 Voix intérieure",v:r.pensee},{l:"🔍 Distorsions",v:(r.distorsions||[]).join(", ")||"—"},
+    {l:"❤️ Émotions",v:(r.emotions||[]).join(", ")||"—"},{l:"⚖️ Norme",v:r.norme},
+    {l:"🛡️ Contre-arguments",v:r.contrearguments},{l:"📐 Écart",v:r.ecart},
+    {l:"🎯 Besoins",v:r.besoins},{l:"⚡ Action (5 min)",v:r.action},{l:"🗓️ Projet",v:r.projet},
+    {l:"📊 Conviction",v:`${r.convictionAvant}% → ${r.convictionApres}%`},{l:"📝 Note",v:r.noteLibre}
+  ];
+  return `<button class="back-btn" onclick="setView('history')">← Retour</button><h2>Détail séance</h2><p class="sub">${new Date(r.date).toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})}</p>
+${fields.filter(f=>f.v).map(f=>`<div class="card2"><div class="label">${f.l}</div><div style="color:var(--text);line-height:1.6">${esc(f.v)}</div></div>`).join("")}
+<button class="btn btn-danger mt16" onclick="state.records=state.records.filter(x=>x.id!==${r.id});saveRecords(state.records);setView('history')">🗑️ Supprimer</button>`;
+}
+
+function exportAll(){
+  // Collect all tracker data from localStorage
+  const trackerKeys={};
+  for(let y=2024;y<=TOD.y+2;y++){
+    for(let mo=0;mo<12;mo++){
+      const k=storageKey(y,mo);
+      const raw=localStorage.getItem(k);
+      if(raw)trackerKeys[k]=JSON.parse(raw);
+    }
+  }
+  const bundle={
+    version:1,
+    exportDate:new Date().toISOString(),
+    records:state.records,
+    carte:state.carte,
+    carto:state.carto,
+    projets:state.projets,
+    humeur:state.humeur,
+    tracker:trackerKeys,
+  };
+  const date=new Date().toISOString().slice(0,10);
+  dl(JSON.stringify(bundle,null,2),`trialectique_backup_${date}.json`,"application/json");
+}
+
+function importAll(){
+  const input=document.getElementById("importFile");
+  const file=input?.files?.[0];
+  if(!file){alert("Sélectionne un fichier d'abord.");return;}
+  const reader=new FileReader();
+  reader.onload=function(e){
+    try{
+      const bundle=JSON.parse(e.target.result);
+      if(!bundle.version){throw new Error("Format non reconnu.");}
+      const merge=confirm(
+        `📦 Fichier du ${new Date(bundle.exportDate).toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})}\n\n`+
+        `• ${(bundle.records||[]).length} séance(s) TCC\n`+
+        `• ${Object.values(bundle.carte||{}).flat().length} éléments carte de valeur\n`+
+        `• ${Object.keys(bundle.tracker||{}).length} mois de tracker\n`+
+        `• ${(bundle.projets||[]).length} projets\n\n`+
+        `Fusionner avec tes données actuelles ?\n(OK = Fusionner · Annuler = Remplacer)`
+      );
+      if(merge){
+        // MERGE — combine without duplicates
+        if(bundle.records){
+          const existingIds=new Set(state.records.map(r=>r.id));
+          const newRecords=bundle.records.filter(r=>!existingIds.has(r.id));
+          state.records=[...state.records,...newRecords].sort((a,b)=>new Date(b.date)-new Date(a.date));
+          saveRecords(state.records);
+        }
+        if(bundle.carte){
+          Object.keys(bundle.carte).forEach(k=>{
+            if(!state.carte[k])state.carte[k]=[];
+            const existing=new Set(state.carte[k]);
+            (bundle.carte[k]||[]).forEach(v=>{if(!existing.has(v))state.carte[k].push(v);});
+          });
+          saveCarte();
+        }
+        if(bundle.carto){
+          Object.keys(bundle.carto).forEach(cat=>{
+            if(!state.carto[cat])state.carto[cat]=[];
+            const existingIds=new Set(state.carto[cat].map(i=>i.id));
+            (bundle.carto[cat]||[]).forEach(item=>{if(!existingIds.has(item.id))state.carto[cat].push(item);});
+          });
+          saveCarto();
+        }
+        if(bundle.projets){
+          const existingIds=new Set(state.projets.map(p=>p.id));
+          const newProjets=bundle.projets.filter(p=>!existingIds.has(p.id));
+          state.projets=[...state.projets,...newProjets];
+          saveProjets();
+        }
+        if(bundle.humeur){
+          Object.keys(bundle.humeur).forEach(k=>{if(!state.humeur[k])state.humeur[k]=bundle.humeur[k];});
+          saveHumeur();
+        }
+        if(bundle.tracker){
+          Object.keys(bundle.tracker).forEach(k=>{
+            const existing=JSON.parse(localStorage.getItem(k)||"{}");
+            const merged={...bundle.tracker[k],...existing};
+            localStorage.setItem(k,JSON.stringify(merged));
+          });
+        }
+        alert("✅ Fusion réussie ! Toutes les données ont été combinées.");
+      } else {
+        // REPLACE — full overwrite
+        if(!confirm("⚠️ Cela va REMPLACER toutes tes données actuelles. Confirmer ?"))return;
+        if(bundle.records){state.records=bundle.records;saveRecords(state.records);}
+        if(bundle.carte){state.carte=bundle.carte;saveCarte();}
+        if(bundle.carto){state.carto=bundle.carto;saveCarto();}
+        if(bundle.projets){state.projets=bundle.projets;saveProjets();}
+        if(bundle.humeur){state.humeur=bundle.humeur;saveHumeur();}
+        if(bundle.tracker){
+          // Clear old tracker keys then restore
+          for(let y=2024;y<=TOD.y+2;y++){for(let mo=0;mo<12;mo++)localStorage.removeItem(storageKey(y,mo));}
+          Object.keys(bundle.tracker).forEach(k=>localStorage.setItem(k,JSON.stringify(bundle.tracker[k])));
+        }
+        alert("✅ Import réussi ! Données remplacées.");
+      }
+      loadTrackerMonth();
+      input.value="";
+      render();
+    }catch(err){
+      alert("❌ Erreur lors de l'import : "+err.message+"\nVérifie que le fichier est bien un backup Trialectique.");
+    }
+  };
+  reader.readAsText(file);
+}
+
+function renderSettings(){
+  const trackerMonths=Object.keys(localStorage).filter(k=>k.startsWith("habits_")).length;
+  const totalCarteItems=Object.values(state.carte).flat().length;
+  return `<button class="back-btn" onclick="setView('home')">← Retour</button><h2>⚙️ Paramètres</h2>
+
+<div class="card">
+<div style="font-weight:700;color:var(--sky-deeper);margin-bottom:6px">🔑 Clé API Anthropic</div>
+<p class="sub">Pour les suggestions IA. Console gratuite sur console.anthropic.com</p>
+<input class="api-input" type="password" placeholder="sk-ant-..." value="${state.apiKey}" id="apiKeyInput"/>
+<button class="btn btn-primary mt8" onclick="state.apiKey=document.getElementById('apiKeyInput').value;localStorage.setItem('tcc_apikey',state.apiKey);alert('✅ Clé sauvegardée !')">Sauvegarder</button>
+</div>
+
+<div class="card mt12">
+<div style="font-weight:700;color:var(--sky-deeper);margin-bottom:4px">📤 Exporter toutes mes données</div>
+<p class="sub">Sauvegarde complète : séances TCC, tracker, cartographie, projets, carte de valeur — dans un seul fichier JSON.</p>
+<div style="background:var(--sky-soft);border-radius:12px;padding:12px;margin-bottom:12px;font-size:.8rem;color:var(--text3)">
+  📊 <strong style="color:var(--text)">${state.records.length}</strong> séance(s) TCC &nbsp;·&nbsp;
+  <strong style="color:var(--text)">${totalCarteItems}</strong> éléments carte &nbsp;·&nbsp;
+  <strong style="color:var(--text)">${trackerMonths}</strong> mois de tracker &nbsp;·&nbsp;
+  <strong style="color:var(--text)">${state.projets.length}</strong> projets
+</div>
+<button class="btn btn-primary" onclick="exportAll()">📤 Exporter le backup complet</button>
+<div style="display:flex;gap:8px;margin-top:10px">
+<button class="btn-sm" onclick="exportTxt()">📄 Séances en TXT</button>
+<button class="btn-sm" onclick="exportJson()">💾 Séances en JSON</button>
+</div>
+</div>
+
+<div class="card mt12">
+<div style="font-weight:700;color:var(--sky-deeper);margin-bottom:4px">📥 Importer des données</div>
+<p class="sub">Importe un fichier backup Trialectique (.json). Tu pourras <strong>fusionner</strong> (combiner avec tes données actuelles) ou <strong>remplacer</strong> (écraser tout).</p>
+<div style="background:#fef9c3;border:1.5px solid #fde047;border-radius:12px;padding:12px;margin-bottom:12px;font-size:.8rem;color:#713f12">
+  ⚠️ <strong>Conseil :</strong> exporte d'abord tes données actuelles avant d'importer, au cas où.
+</div>
+<label style="display:block;background:var(--sky-soft);border:2px dashed var(--border2);border-radius:14px;padding:20px;text-align:center;cursor:pointer;margin-bottom:10px">
+  <div style="font-size:1.5rem;margin-bottom:6px">📁</div>
+  <div style="font-weight:700;color:var(--sky-deeper);font-size:.9rem">Sélectionner le fichier backup</div>
+  <div style="font-size:.75rem;color:var(--text3);margin-top:4px">trialectique_backup_XXXX-XX-XX.json</div>
+  <input type="file" id="importFile" accept=".json" style="display:none" onchange="document.getElementById('importFileLabel').textContent=this.files[0]?.name||''"/>
+</label>
+<div id="importFileLabel" style="font-size:.8rem;color:var(--sky-deeper);font-weight:600;margin-bottom:10px;min-height:16px;text-align:center"></div>
+<button class="btn btn-success" onclick="importAll()">📥 Importer</button>
+</div>
+
+<div class="card mt12">
+<div style="font-weight:700;color:var(--sky-deeper);margin-bottom:6px">📱 Installer l'app</div>
+<p class="sub">iPhone : Safari → Partager → Sur l'écran d'accueil</p>
+<p class="sub" style="margin:0">Android : Chrome → Menu → Ajouter à l'écran d'accueil</p>
+</div>`;
+}
+
+// ============================================================
+// RENDER NEW SESSION (TCC)
+// ============================================================
+function renderNew(){
+  const f=state.form;const load=field=>state.ai.loading&&state.ai.field===field;
+  let content="";
+
+  if(state.step==="pensee"){
+    content=`<h2>💭 Quelle est la voix intérieure / pensée ?</h2><p class="sub">Ce que la voix dit, mot pour mot.</p>
+<textarea rows="5" placeholder="Ex : Je suis incompétent, je n'y arriverai jamais..." onblur="setForm('pensee',this.value)">${esc(f.pensee)}</textarea>
+<div class="mt16"><p class="sub">Niveau de conviction : <span class="strong">${f.convictionAvant}%</span></p>
+<input type="range" min="0" max="100" value="${f.convictionAvant}" oninput="setForm('convictionAvant',+this.value)"/></div>
+${navRow(true)}`;
+
+  }else if(state.step==="manifestation"){
+    content=`<h2>🔍 Comment ça se manifeste ?</h2>
+<p class="sub">Distorsions cognitives</p><div class="wrap">${tags(DISTORSIONS,f.distorsions,"distorsions")}</div>
+<p class="sub">Émotions</p><div class="wrap">${tags(EMOTIONS,f.emotions,"emotions")}</div>
+<p class="sub">Comportements</p><div class="wrap">${tags(COMPORTEMENTS,f.comportements,"comportements")}</div>
+<div class="divider"></div>
+<p class="sub">Intensité émotionnelle : <span class="strong">${f.intensiteInit}/100</span></p>
+<input type="range" min="0" max="100" value="${f.intensiteInit}" oninput="setForm('intensiteInit',+this.value)"/>
+${navRow()}`;
+
+  }else if(state.step==="norme"){
+    const normesAuto=[...new Set(f.distorsions.flatMap(d=>(DISTORSION_DATA[d]?.normes||[])))];
+    content=`<h2>⚖️ Quelle est la norme ?</h2><p class="sub">Le fait objectif et universel qui permet d'analyser cette voix.</p>
+${normesAuto.length>0?`<p class="label" style="color:var(--sky-deeper)">📌 Normes selon tes distorsions</p>
+${normesAuto.map(n=>`<div class="norme-card" onclick="setForm('norme','${n.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')"><div style="font-size:.875rem;color:var(--text);line-height:1.5">${esc(n)}</div><div class="norme-hint">Appuyer pour utiliser →</div></div>`).join("")}
+<div class="divider"></div><p class="label">✏️ Ou formule la tienne</p>`
+:`<p class="sub" style="font-style:italic">Sélectionne des distorsions à l'étape précédente pour voir des normes suggérées.</p>`}
+<textarea rows="4" placeholder="Ex : La perfection n'existe pas..." onblur="setForm('norme',this.value)">${esc(f.norme)}</textarea>
+${navRow()}`;
+
+  }else if(state.step==="analyse"){
+    const questionsAuto=[...new Set(f.distorsions.flatMap(d=>(DISTORSION_DATA[d]?.questions||[])))];
+    content=`<h2>🗣️ Analyse</h2><p class="sub">Questions pour challenger la voix.</p>
+${questionsAuto.length>0?`<p class="label" style="color:var(--sky-deeper)">📌 Questions selon tes distorsions</p>
+${questionsAuto.map((q,i)=>`<div class="card2"><div style="font-size:.875rem;font-weight:600;color:var(--sky-deeper);margin-bottom:8px">${esc(q)}</div>
+<textarea rows="3" placeholder="Ta réponse..." onblur="state.form.reponses['auto_${i}']=this.value">${esc(f.reponses[`auto_${i}`]||"")}</textarea></div>`).join("")}`
+:`<p class="sub" style="font-style:italic">Sélectionne des distorsions pour voir des questions personnalisées.</p>`}
+<div class="divider"></div><p class="label">✏️ Mes questions personnelles</p>
+${(f.questions||[]).map((q,i)=>`<div class="card2" style="position:relative"><div style="font-size:.875rem;font-weight:600;margin-bottom:8px">${esc(q)}</div>
+<textarea rows="3" placeholder="Ta réponse..." onblur="state.form.reponses['custom_${i}']=this.value">${esc(f.reponses[`custom_${i}`]||"")}</textarea>
+<button onclick="state.form.questions.splice(${i},1);render()" style="position:absolute;top:12px;right:12px;background:var(--border);border:none;color:var(--text2);cursor:pointer;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:.75rem">✕</button></div>`).join("")}
+<div class="card" style="border-style:dashed;background:transparent"><p class="label">+ Ajouter ma propre question</p>
+<textarea rows="2" placeholder="Ex : Est-ce que j'ai déjà vécu ça et m'en suis sorti ?" id="newQ"></textarea>
+<button class="btn btn-secondary mt8" style="padding:10px" onclick="const q=document.getElementById('newQ').value.trim();if(q){state.form.questions=[...(state.form.questions||[]),q];render();}">Ajouter</button></div>
+${navRow()}`;
+
+  }else if(state.step==="contrearguments"){
+    const contreAuto=[...new Set(f.distorsions.flatMap(d=>(DISTORSION_DATA[d]?.contreArgs||[])))];
+    const allCarteItems=[
+      ...state.carte.valeurs.map(x=>({label:x,cat:"⚡"})),
+      ...state.carte.forces.map(x=>({label:x,cat:"💪"})),
+      ...state.carte.reussites.map(x=>({label:x,cat:"🏆"})),
+      ...state.carte.croyances.map(x=>({label:x,cat:"🧠"})),
+      ...(state.carte.fiertes||[]).map(x=>({label:x,cat:"🌟"})),
+      ...(state.carte.obstacles||[]).map(x=>({label:x,cat:"⛰️"})),
+      ...(state.carte.phrases||[]).map(x=>({label:x,cat:"💬"})),
+    ];
+    const sel=f.contreSelections||[];const carteSel=f.carteSelections||[];
+    content=`<h2>🛡️ Contre-arguments</h2>
+${contreAuto.length>0?`<p class="label" style="color:var(--sky-deeper)">📌 Contre-arguments selon tes distorsions</p>
+${contreAuto.map(item=>`<div class="suggest-item ${sel.includes(item)?"selected":""}" onclick="toggleSel('contreSelections','${item.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')">
+<div class="suggest-check ${sel.includes(item)?"on":""}">${sel.includes(item)?"✓":""}</div>
+<div style="font-size:.875rem;line-height:1.5">${esc(item)}</div></div>`).join("")}
+<div class="divider"></div>`:""}
+<p class="label" style="color:var(--sky-deeper)">🗺️ Pioche dans ta carte de valeur</p>
+<div class="wrap mb12">${allCarteItems.map(item=>`<button class="tag ${carteSel.includes(item.label)?"tag-on":"tag-off"}" onclick="toggleSel('carteSelections','${item.label.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')">
+${item.cat} ${esc(item.label)}</button>`).join("")}</div>
+${carteSel.length>0?`<button class="btn btn-primary mb12" onclick="askAI('contre')" ${load("contre")?"disabled":""}>${aiBtnTxt("contre","✦ Générer depuis ma carte de valeur")}</button>`:""} 
+${aiBox(f.contreAI,"contre","setForm('contrearguments',state.form.contreAI)")}
+<div class="divider"></div>
+<span class="label">✏️ Formule ou ajuste tes contre-arguments</span>
+<textarea rows="4" placeholder="Tes contre-arguments personnels..." onblur="setForm('contrearguments',this.value)">${esc(f.contrearguments)}</textarea>
+${navRow()}`;
+
+  }else if(state.step==="ecart"){
+    content=`<h2>📐 Écart constaté</h2><p class="sub">Ce qui sépare la voix de la norme.</p>
+<button class="btn btn-primary mb12" onclick="askAI('ecart')" ${load("ecart")?"disabled":""}>${aiBtnTxt("ecart","✦ Analyser l'écart avec l'IA")}</button>
+${aiBox(f.ecartAI,"ecart","setForm('ecart',state.form.ecartAI)")}
+<textarea rows="4" placeholder="L'écart entre la voix et la norme..." onblur="setForm('ecart',this.value)">${esc(f.ecart)}</textarea>
+${navRow()}`;
+
+  }else if(state.step==="besoin"){
+    const besoinsAuto=[...new Set(f.distorsions.flatMap(d=>(DISTORSION_DATA[d]?.besoins||[])))];
+    const actionsAuto=[...new Set(f.distorsions.flatMap(d=>(DISTORSION_DATA[d]?.actions||[])))];
+    const projetsAuto=[...new Set(f.distorsions.flatMap(d=>(DISTORSION_DATA[d]?.projets||[])))];
+    content=`<h2>🎯 Besoins & Actions</h2>
+${besoinsAuto.length>0?`<p class="label" style="color:var(--sky-deeper)">📌 Besoins identifiés selon tes distorsions</p>
+${suggestList(besoinsAuto,"besoinSelections","Ex : Confiance en soi, clarté...")}
+<div class="divider"></div>`:`<span class="label">Besoins identifiés</span><textarea rows="3" placeholder="Ex : Confiance en soi..." onblur="setForm('besoins',this.value)" class="mb12">${esc(f.besoins)}</textarea>`}
+<p class="label" style="color:var(--sky-deeper)">⚡ Actions immédiates (5 min)</p>
+${suggestList(actionsAuto,"actionSelections","Ex : Respirer 5 min, écrire 3 réussites...")}
+<div class="divider"></div>
+<p class="label" style="color:var(--sky-deeper)">🗓️ Projets (long terme)</p>
+${suggestList(projetsAuto,"projetSelections","Ex : Méditer chaque jour, travailler la confiance...")}
+${navRow()}`;
+
+  }else if(state.step==="evaluation"){
+    const cd=f.convictionAvant-f.convictionApres;const id=f.intensiteInit-f.intensiteApres;
+    content=`<h2>📊 Évaluation</h2>
+<div class="card2 italic mb12">"${esc(f.pensee)}"</div>
+<p class="sub">Conviction maintenant : <span class="strong">${f.convictionApres}%</span></p>
+<input type="range" min="0" max="100" value="${f.convictionApres}" oninput="setForm('convictionApres',+this.value)"/>
+<p class="sub mt12">Intensité émotionnelle maintenant : <span class="strong">${f.intensiteApres}/100</span></p>
+<input type="range" min="0" max="100" value="${f.intensiteApres}" oninput="setForm('intensiteApres',+this.value)"/>
+<div class="stat-grid mt16">
+<div class="stat-card"><div class="label">Conviction</div><div class="stat-val ${cd>0?"green":"orange"}">${cd>0?"−":"+"} ${Math.abs(cd)}%</div></div>
+<div class="stat-card"><div class="label">Intensité</div><div class="stat-val ${id>0?"green":"orange"}">${id>0?"−":"+"} ${Math.abs(id)}</div></div>
+</div>
+<span class="label">Note libre</span>
+<textarea rows="4" placeholder="Comment tu te sens après cette séance ?" onblur="setForm('noteLibre',this.value)">${esc(f.noteLibre)}</textarea>
+${navRow()}`;
+  }
+
+  return `<button class="back-btn" onclick="setView('home')">← Annuler</button>${progressBar()}${content}`;
+}
+
+// ============================================================
+// RENDER PROJETS
+// ============================================================
+function getCatInfo(key){return PROJET_CATS.find(c=>c.key===key)||PROJET_CATS[4];}
+function getStatutInfo(key){return PROJET_STATUTS.find(s=>s.key===key)||PROJET_STATUTS[0];}
+
+function projetCycleStatut(id){
+  const p=state.projets.find(x=>x.id===id);if(!p)return;
+  const keys=PROJET_STATUTS.map(s=>s.key);
+  const idx=keys.indexOf(p.statut);
+  p.statut=keys[(idx+1)%keys.length];
+  saveProjets();render();
+}
+
+function projetDelete(id){
+  if(!confirm("Supprimer ce projet ?"))return;
+  state.projets=state.projets.filter(x=>x.id!==id);
+  state.projetDetail=null;saveProjets();render();
+}
+
+function projetSave(){
+  const get=id=>document.getElementById(id)?.value||"";
+  const data={titre:get("pj_titre"),desc:get("pj_desc"),cat:get("pj_cat"),statut:get("pj_statut"),priorite:get("pj_priorite"),lien:get("pj_lien")};
+  if(!data.titre.trim()){alert("Le titre est obligatoire.");return;}
+  if(state.projetEdit){
+    const idx=state.projets.findIndex(x=>x.id===state.projetEdit);
+    if(idx>=0)state.projets[idx]={...state.projets[idx],...data};
+    state.projetDetail=state.projetEdit;
+  }else{
+    const newId=Date.now();
+    state.projets.unshift({id:newId,...data});
+    state.projetDetail=newId;
+  }
+  state.projetEdit=null;saveProjets();render();
+}
+
+// Helper: find TCC sessions linked to a project
+function getLinkedSessions(p){
+  const titre=p.titre.toLowerCase();
+  const desc=(p.desc||"").toLowerCase();
+  const lien=(p.lien||"").toLowerCase();
+  return state.records.filter(r=>{
+    const pensee=(r.pensee||"").toLowerCase();
+    const projet=(r.projet||"").toLowerCase();
+    const note=(r.noteLibre||"").toLowerCase();
+    // Match if session pensee or projet field mentions the project title/lien
+    return pensee.includes(titre.substring(0,20))||
+           projet.includes(titre.substring(0,20))||
+           (lien&&pensee.includes(lien.substring(0,15)))||
+           (lien&&projet.includes(lien.substring(0,15)));
+  });
+}
+
+function renderProjets(){
+  // Edit view
+  if(state.projetEdit!==null||state.projetEdit===0){
+    const isNew=state.projetEdit===0;
+    const p=isNew?null:state.projets.find(x=>x.id===state.projetEdit);
+    return `<button class="back-btn" onclick="state.projetEdit=null;render()">← Annuler</button>
+<h2>${isNew?"Nouveau projet":"Modifier le projet"}</h2>
+<div class="card">
+<div class="form-group mb12"><label class="form-label">📌 Titre du projet *</label>
+<input id="pj_titre" class="form-input" type="text" value="${esc(p?p.titre:"")}" placeholder="Ex : Travailler la comparaison sociale..."/></div>
+<div class="form-group mb12"><label class="form-label">📝 Description / Objectif</label>
+<textarea id="pj_desc" rows="4" class="form-input" placeholder="Ce que ce projet vise concrètement...">${esc(p?p.desc:"")}</textarea></div>
+<div class="form-row">
+<div class="form-group"><label class="form-label">🏷️ Catégorie</label>
+<select id="pj_cat" class="form-input">${PROJET_CATS.map(c=>`<option value="${c.key}" ${p&&p.cat===c.key?"selected":""}>${c.label}</option>`).join("")}</select></div>
+<div class="form-group"><label class="form-label">📊 Statut</label>
+<select id="pj_statut" class="form-input">${PROJET_STATUTS.map(s=>`<option value="${s.key}" ${(p?p.statut===s.key:s.key==="todo")?"selected":""}>${s.label}</option>`).join("")}</select></div>
+</div>
+<div class="form-group mb12"><label class="form-label">⚡ Priorité</label>
+<select id="pj_priorite" class="form-input">
+<option value="haute" ${p&&p.priorite==="haute"?"selected":""}>🔴 Haute</option>
+<option value="moyenne" ${p&&p.priorite==="moyenne"?"selected":""}>🟡 Moyenne</option>
+<option value="basse" ${(!p||p.priorite==="basse")?"selected":""}>🟢 Basse</option>
+</select></div>
+<div class="form-group mb16"><label class="form-label">🔗 Lien (cartographie / note)</label>
+<input id="pj_lien" class="form-input" type="text" value="${esc(p?p.lien:"")}" placeholder="Ex : Situation HCR 2015..."/></div>
+<button class="btn btn-success" onclick="projetSave()">💾 Sauvegarder</button>
+</div>`;
+  }
+
+  // Detail view
+  if(state.projetDetail!==null){
+    const p=state.projets.find(x=>x.id===state.projetDetail);
+    if(!p)return"";
+    const cat=getCatInfo(p.cat);
+    const statut=getStatutInfo(p.statut);
+    const prioLabel=p.priorite==="haute"?"🔴 Haute":p.priorite==="moyenne"?"🟡 Moyenne":"🟢 Basse";
+    const linked=getLinkedSessions(p);
+    const avgReduction=linked.length>0?Math.round(linked.reduce((a,r)=>a+((r.convictionAvant||0)-(r.convictionApres||0)),0)/linked.length):null;
+
+    return `<button class="back-btn" onclick="state.projetDetail=null;render()">← Retour aux projets</button>
+<div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px">
+<div style="width:6px;min-height:60px;border-radius:4px;background:${cat.accent};flex-shrink:0;margin-top:4px"></div>
+<div style="flex:1">
+<span class="projet-cat-badge" style="background:${cat.bg};color:${cat.color}">${cat.label}</span>
+<div style="font-size:1.1rem;font-weight:800;color:var(--text);line-height:1.4;margin-bottom:6px">${esc(p.titre)}</div>
+<div style="display:flex;gap:8px;flex-wrap:wrap">
+<button class="${statut.cls} projet-statut" onclick="projetCycleStatut(${p.id})">${statut.label} ↻</button>
+<span style="font-size:.75rem;color:var(--text3);padding:4px 10px;background:var(--sky-soft);border-radius:99px;border:1px solid var(--border)">${prioLabel}</span>
+</div>
+</div>
+</div>
+
+${p.desc?`<div class="card2"><span class="carto-detail-label">📝 Objectif</span><div style="font-size:.9rem;color:var(--text);line-height:1.7">${esc(p.desc)}</div></div>`:""}
+${p.lien?`<div class="card2"><span class="carto-detail-label">🔗 Lien</span><div style="font-size:.9rem;color:var(--text2)">${esc(p.lien)}</div></div>`:""}
+
+<!-- TCC sessions liées -->
+<div class="card" style="margin-bottom:14px;${linked.length>0?"border-color:#6ee7b7;background:linear-gradient(135deg,#f0fdf4,#dcfce7)":""}">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${linked.length>0?12:0}px">
+<div style="font-weight:700;color:${linked.length>0?"#065f46":"var(--text3)"};font-size:.875rem">
+🧠 Séances TCC liées à ce projet
+</div>
+<span style="font-size:1.1rem;font-weight:800;color:${linked.length>0?"#059669":"var(--text3)"}">
+${linked.length} séance${linked.length>1?"s":""}
+</span>
+</div>
+${linked.length===0?`<p style="font-size:.8rem;color:var(--text3);margin-top:8px">Aucune séance TCC n'est encore liée à ce projet.<br>Lance une séance et mentionne ce projet dans le champ "Projets".</p>`:`
+<div style="margin-bottom:10px;padding:10px 12px;background:rgba(255,255,255,.7);border-radius:12px;display:flex;gap:16px;flex-wrap:wrap">
+<div style="text-align:center"><div style="font-size:1.4rem;font-weight:800;color:#059669">${linked.length}</div><div style="font-size:.7rem;color:#065f46;font-weight:600">Séances</div></div>
+${avgReduction!==null?`<div style="text-align:center"><div style="font-size:1.4rem;font-weight:800;color:${avgReduction>0?"#059669":"#d97706"}">${avgReduction>0?"−":"+"}${Math.abs(avgReduction)}%</div><div style="font-size:.7rem;color:#065f46;font-weight:600">Conv. moy.</div></div>`:""}
+<div style="text-align:center"><div style="font-size:1.4rem;font-weight:800;color:#0369a1">${new Date(linked[linked.length-1]?.date).toLocaleDateString("fr-FR",{day:"numeric",month:"short"})}</div><div style="font-size:.7rem;color:#065f46;font-weight:600">1ère séance</div></div>
+<div style="text-align:center"><div style="font-size:1.4rem;font-weight:800;color:#0369a1">${new Date(linked[0]?.date).toLocaleDateString("fr-FR",{day:"numeric",month:"short"})}</div><div style="font-size:.7rem;color:#065f46;font-weight:600">Dernière</div></div>
+</div>
+${linked.slice(0,5).map(r=>`<div style="padding:10px 12px;background:rgba(255,255,255,.8);border-radius:10px;margin-bottom:6px;cursor:pointer" onclick="state.selected=state.records.find(x=>x.id===${r.id});state.projetDetail=null;setView('detail')">
+<div style="font-size:.7rem;color:var(--text3);font-weight:600;margin-bottom:3px">${new Date(r.date).toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})}</div>
+<div style="font-size:.85rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(r.pensee)}</div>
+<div style="font-size:.75rem;color:${(r.convictionAvant-r.convictionApres)>0?"#059669":"#d97706"};margin-top:2px;font-weight:600">Conviction ${r.convictionAvant}% → ${r.convictionApres}% &nbsp;${(r.convictionAvant-r.convictionApres)>0?"✅":"➡️"}</div>
+</div>`).join("")}
+${linked.length>5?`<div style="font-size:.75rem;color:var(--text3);text-align:center;padding:6px">+${linked.length-5} séance(s) supplémentaire(s) dans l'historique</div>`:""}`}
+</div>
+
+<div class="card" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;margin-top:4px">
+<div style="font-weight:700;color:#1d4ed8;font-size:.875rem;margin-bottom:12px">💡 Pour avancer sur ce projet</div>
+${p.cat==="cognitif"?`
+<div style="font-size:.875rem;color:#1e3a5f;line-height:1.8;margin-bottom:12px">→ Lance une séance TCC dédiée à cette pensée<br>→ Note 3 preuves contraires dans ton journal chaque semaine<br>→ Relis ta carte de valeur quand la pensée surgit</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<button class="btn-sm" style="background:var(--sky);color:#fff;border-color:var(--sky)" onclick="state.form=emptyForm();state.form.pensee='${esc(p.titre).replace(/'/g,"\\'")}';state.step='pensee';state.projetDetail=null;setView('new')">➕ Ouvrir en séance TCC</button>
+<button class="btn-sm" onclick="state.projetDetail=null;setView('carte')">🗺️ Voir ma carte de valeur</button>
+</div>`:""}
+${p.cat==="relationnel"?`
+<div style="font-size:.875rem;color:#1e3a5f;line-height:1.8;margin-bottom:12px">→ Cartographie le groupe ou la situation liée<br>→ Prépare des contre-arguments avant chaque interaction<br>→ Travaille l'assertivité par des micro-pratiques</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<button class="btn-sm" style="background:var(--sky);color:#fff;border-color:var(--sky)" onclick="state.projetDetail=null;state.cartoTab='groupes';setView('cartographie')">👥 Ouvrir Cartographie · Groupes</button>
+<button class="btn-sm" onclick="state.form=emptyForm();state.step='pensee';state.projetDetail=null;setView('new')">➕ Nouvelle séance TCC</button>
+</div>`:""}
+${p.cat==="situation"?`
+<div style="font-size:.875rem;color:#1e3a5f;line-height:1.8;margin-bottom:12px">→ Ouvre la cartographie et complète l'entrée associée<br>→ Lance une séance TCC dédiée à cette situation<br>→ Identifie le besoin non satisfait derrière la réaction</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<button class="btn-sm" style="background:var(--sky);color:#fff;border-color:var(--sky)" onclick="state.projetDetail=null;state.cartoTab='situations';setView('cartographie')">🧨 Ouvrir Cartographie · Situations</button>
+<button class="btn-sm" onclick="state.form=emptyForm();state.step='pensee';state.projetDetail=null;setView('new')">➕ Nouvelle séance TCC</button>
+</div>`:""}
+${p.cat==="construction"?`
+<div style="font-size:.875rem;color:#1e3a5f;line-height:1.8;margin-bottom:12px">→ Lie ce projet à une habitude dans ton tracker<br>→ Fixe un jalon concret dans les 30 prochains jours<br>→ Écris ce que tu veux pouvoir dire de toi dans 1 an</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<button class="btn-sm" style="background:var(--sky);color:#fff;border-color:var(--sky)" onclick="state.projetDetail=null;setView('tracker')">📅 Ouvrir le Tracker</button>
+<button class="btn-sm" onclick="state.projetDetail=null;setView('carte')">🗺️ Voir ma carte de valeur</button>
+<button class="btn-sm" onclick="state.form=emptyForm();state.step='pensee';state.projetDetail=null;setView('new')">➕ Nouvelle séance TCC</button>
+</div>`:""}
+${p.cat==="autre"?`
+<div style="font-size:.875rem;color:#1e3a5f;line-height:1.8;margin-bottom:12px">→ Définis une première action concrète pour démarrer<br>→ Reviens régulièrement mesurer ta progression</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px">
+<button class="btn-sm" style="background:var(--sky);color:#fff;border-color:var(--sky)" onclick="state.form=emptyForm();state.step='pensee';state.projetDetail=null;setView('new')">➕ Nouvelle séance TCC</button>
+<button class="btn-sm" onclick="state.projetDetail=null;setView('cartographie')">🧭 Ouvrir Cartographie</button>
+</div>`:""}
+</div>
+
+<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+<button class="btn-sm" onclick="state.projetEdit=${p.id};render()">✏️ Modifier</button>
+<button class="btn-sm" onclick="projetCycleStatut(${p.id})">🔄 Changer statut</button>
+</div>
+<button class="btn btn-danger mt12" onclick="projetDelete(${p.id})">🗑️ Supprimer</button>`;
+  }
+
+  // List view
+  const sf=state.projetFilter;
+  const cf=state.projetCatFilter;
+  let filtered=state.projets;
+  if(sf!=="all")filtered=filtered.filter(p=>p.statut===sf);
+  if(cf!=="all")filtered=filtered.filter(p=>p.cat===cf);
+
+  const counts={all:state.projets.length};
+  PROJET_STATUTS.forEach(s=>{counts[s.key]=state.projets.filter(p=>p.statut===s.key).length;});
+
+  const encours=counts["encours"]||0;
+  const termine=counts["termine"]||0;
+  const total=state.projets.length;
+  const totalTCC=state.records.length;
+
+  return `<button class="back-btn" onclick="setView('home')">← Retour</button>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+<h2 style="margin:0">🎯 Mes Projets</h2>
+<button class="btn-add" onclick="state.projetEdit=0;render()">+ Nouveau</button>
+</div>
+<p class="sub">Tes projets de travail personnels — cognitifs, relationnels, de construction de soi.</p>
+
+<div class="stats-grid-3" style="margin-bottom:14px">
+<div class="stat-card-mini"><div class="stat-val-mid" style="color:var(--sky-deeper)">${encours}</div><div class="stat-label-sm">En cours</div></div>
+<div class="stat-card-mini"><div class="stat-val-mid" style="color:#059669">${termine}</div><div class="stat-label-sm">Terminés</div></div>
+<div class="stat-card-mini"><div class="stat-val-mid" style="color:var(--text3)">${totalTCC}</div><div class="stat-label-sm">Séances TCC</div></div>
+</div>
+
+<div class="projet-filter-row">
+<button class="projet-filter ${sf==="all"?"projet-filter-on":""}" onclick="state.projetFilter='all';render()">Tous (${counts.all})</button>
+${PROJET_STATUTS.map(s=>`<button class="projet-filter ${sf===s.key?"projet-filter-on":""}" onclick="state.projetFilter='${s.key}';render()">${s.label.split(" ").slice(1).join(" ")} (${counts[s.key]||0})</button>`).join("")}
+</div>
+
+<div class="projet-filter-row">
+<button class="projet-filter ${cf==="all"?"projet-filter-on":""}" onclick="state.projetCatFilter='all';render()">Toutes catégories</button>
+${PROJET_CATS.map(c=>`<button class="projet-filter ${cf===c.key?"projet-filter-on":""}" onclick="state.projetCatFilter='${c.key}';render()">${c.label}</button>`).join("")}
+</div>
+
+${filtered.length===0?`<div class="card" style="text-align:center;padding:30px"><p class="sub" style="margin:0">Aucun projet dans ce filtre.</p></div>`:""}
+
+${filtered.map(p=>{
+  const cat=getCatInfo(p.cat);
+  const statut=getStatutInfo(p.statut);
+  const prioColor=p.priorite==="haute"?"#dc2626":p.priorite==="moyenne"?"#d97706":"#059669";
+  const linked=getLinkedSessions(p);
+  const tccBadge=linked.length>0
+    ?`<span style="display:inline-flex;align-items:center;gap:3px;background:#d1fae5;color:#065f46;padding:3px 9px;border-radius:99px;font-size:.7rem;font-weight:700">🧠 ${linked.length} TCC</span>`
+    :`<span style="display:inline-flex;align-items:center;gap:3px;background:var(--sky-light);color:var(--sky-deeper);padding:3px 9px;border-radius:99px;font-size:.7rem;font-weight:600">🧠 0 TCC</span>`;
+  return `<div class="projet-card" onclick="state.projetDetail=${p.id};render()">
+<div class="projet-card-accent" style="background:${cat.accent}"></div>
+<div style="padding-left:8px">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:6px">
+<span class="projet-cat-badge" style="background:${cat.bg};color:${cat.color};margin:0">${cat.label}</span>
+<span style="font-size:.7rem;font-weight:700;color:${prioColor};white-space:nowrap">${p.priorite==="haute"?"🔴":p.priorite==="moyenne"?"🟡":"🟢"} ${p.priorite}</span>
+</div>
+<div class="projet-title">${esc(p.titre)}</div>
+${p.desc?`<div class="projet-desc">${esc(p.desc.substring(0,100))}${p.desc.length>100?"…":""}</div>`:""}
+<div class="projet-footer">
+<button class="${statut.cls} projet-statut" onclick="event.stopPropagation();projetCycleStatut(${p.id})">${statut.label} ↻</button>
+<div style="display:flex;gap:6px;align-items:center">
+${tccBadge}
+${p.lien?`<span class="projet-link-badge">🔗 ${esc(p.lien.substring(0,20))}</span>`:""}
+</div>
+</div>
+</div>
+</div>`;
+}).join("")}
+
+<button class="btn btn-secondary mt8" style="border-style:dashed" onclick="state.projetEdit=0;render()">+ Ajouter un projet personnalisé</button>`;
+}
+
+// ============================================================
+// MAIN RENDER
+// ============================================================
+function render(){
+  const app=document.getElementById("app");
+  let html="";
+  if(state.view==="home")html=renderHome();
+  else if(state.view==="new")html=renderNew();
+  else if(state.view==="history")html=renderHistory();
+  else if(state.view==="detail")html=renderDetail();
+  else if(state.view==="carte")html=renderCarte();
+  else if(state.view==="settings")html=renderSettings();
+  else if(state.view==="dashboard")html=renderDashboard();
+  else if(state.view==="tracker")html=renderTrackerView();
+  else if(state.view==="cartographie")html=renderCartographie();
+  else if(state.view==="projets")html=renderProjets();
+  app.innerHTML=html;
+  app.scrollTop=0;
+}
+render();
+</script>
+</body>
+</html>
