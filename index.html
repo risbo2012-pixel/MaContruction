@@ -7,6 +7,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes"/>
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 <meta name="apple-mobile-web-app-title" content="Trialectique"/>
+<!-- PWA Manifest inline -->
+<link rel="manifest" href="data:application/manifest+json;base64,eyJuYW1lIjoiVHJpYWxlY3RpcXVlIiwic2hvcnRfbmFtZSI6IlRyaWFsZWN0aXF1ZSIsImRlc2NyaXB0aW9uIjoiVENDIHBlcnNvbm5lbGxlIOKAlCBTdWpldCBPYmpldCBQcm9qZXQiLCJzdGFydF91cmwiOiIuIiwiZGlzcGxheSI6InN0YW5kYWxvbmUiLCJiYWNrZ3JvdW5kX2NvbG9yIjoiI2YwZjlmZiIsInRoZW1lX2NvbG9yIjoiIzBlYTVlOSIsIm9yaWVudGF0aW9uIjoicG9ydHJhaXQiLCJpY29ucyI6W3sic3JjIjoiZGF0YTppbWFnZS9zdmcreG1sLDxzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTAwIDEwMCc+PHJlY3Qgd2lkdGg9JzEwMCcgaGVpZ2h0PScxMDAnIHJ4PScyMCcgZmlsbD0nIzBlYTVlOScvPjx0ZXh0IHk9Jy45ZW0nIGZvbnQtc2l6ZT0nNzAnIHg9JzE1Jz7wn6eAPC90ZXh0Pjwvc3ZnPiIsInNpemVzIjoiYW55IiwidHlwZSI6ImltYWdlL3N2Zyt4bWwifV19"/>
 <title>Trialectique — Sujet Objet Projet</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -19,6 +21,7 @@
   --green:#059669;--red:#dc2626;--orange:#d97706;--purple:#7c3aed;
 }
 body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;min-height:100vh;font-size:16px}
+#offlineBanner{display:none;position:fixed;top:0;left:0;right:0;z-index:9999;background:#fbbf24;color:#78350f;text-align:center;padding:10px 16px;font-weight:700;font-size:.85rem;letter-spacing:.01em;}
 .app{max-width:600px;margin:0 auto;padding:20px 16px 40px;min-height:100vh}
 h1{font-size:1.6rem;font-weight:800;text-align:center;color:var(--sky-deeper);margin-bottom:4px}
 h2{font-size:1.15rem;font-weight:700;color:var(--sky-deeper);margin-bottom:8px}
@@ -188,13 +191,6 @@ select.form-input{cursor:pointer}
 .projet-filter-row{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
 .projet-filter{padding:6px 14px;border-radius:20px;font-size:.78rem;font-weight:700;cursor:pointer;border:1.5px solid var(--border);transition:.15s;background:var(--card);color:var(--text2)}
 .projet-filter-on{background:var(--sky);color:#fff;border-color:var(--sky)}
-.cat-colors{
-  "cognitif":"#dbeafe|#1d4ed8",
-  "relationnel":"#fce7f3|#9d174d",
-  "situation":"#fef3c7|#92400e",
-  "construction":"#d1fae5|#065f46",
-  "autre":"#ede9fe|#5b21b6"
-}
 /* ===== HUMEUR & CORRÉLATIONS ===== */
 .humeur-btn{width:40px;height:40px;border-radius:12px;border:2px solid var(--border);background:var(--card);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s;flex-shrink:0}
 .humeur-btn-on{border-color:var(--sky);background:var(--sky-light);transform:scale(1.1)}
@@ -209,6 +205,7 @@ select.form-input{cursor:pointer}
 </style>
 </head>
 <body>
+<div id="offlineBanner">📵 Mode hors ligne — toutes tes données sont disponibles localement</div>
 <div class="app" id="app"></div>
 <script>
 // ============================================================
@@ -323,64 +320,24 @@ const PROJET_STATUTS = [
 ];
 
 const PROJETS_DEFAULT = [
-  // COGNITIF
-  {id:1,  titre:"Travailler la pensée 'Tu es un looser'",
-   desc:"Séances TCC dédiées + journal de preuves contraires. Chaque semaine, lister 3 preuves concrètes que cette pensée est fausse.",
-   cat:"cognitif", statut:"encours", priorite:"haute", lien:""},
-  {id:2,  titre:"Travailler la comparaison sociale",
-   desc:"Restructurer la pensée 'Regarde comment les autres réussissent'. Travailler l'ancrage dans ses propres valeurs et son propre rythme.",
-   cat:"cognitif", statut:"encours", priorite:"haute", lien:""},
-  {id:3,  titre:"Travailler la peur de mourir seul et pauvre",
-   desc:"Clarifier concrètement ce que signifient 'seul' et 'pauvre'. Construire un plan de vie concret qui contredit cette prédiction.",
-   cat:"cognitif", statut:"todo", priorite:"haute", lien:""},
-  {id:4,  titre:"Travailler l'identité indépendante du regard des autres",
-   desc:"Construire une identité solide basée sur ses valeurs et non sur l'approbation extérieure. Pratiquer la séparation acte/personne.",
-   cat:"cognitif", statut:"encours", priorite:"haute", lien:""},
-  {id:5,  titre:"Journal de preuves contraires hebdomadaire",
-   desc:"Chaque dimanche, noter 5 preuves que les pensées automatiques négatives sont fausses. Alimenter la carte de valeur.",
-   cat:"cognitif", statut:"todo", priorite:"moyenne", lien:""},
-  // RELATIONNEL
-  {id:6,  titre:"Travailler les déclencheurs liés à la famille paternelle",
-   desc:"Identifier les pensées automatiques activées par la famille paternelle. Préparer des contre-arguments solides avant les interactions.",
-   cat:"relationnel", statut:"todo", priorite:"haute", lien:""},
-  {id:7,  titre:"Travailler le deuil de la relation avec Minouche",
-   desc:"Acceptation de la fin de la relation. Identifier ce que cette relation a appris, ce qui reste, et comment avancer.",
-   cat:"relationnel", statut:"todo", priorite:"haute", lien:""},
-  {id:8,  titre:"Travailler les figures d'autorité professionnelle",
-   desc:"Identifier les distorsions activées avec les chefs. Travailler l'assertivité et la communication directe en contexte professionnel.",
-   cat:"relationnel", statut:"todo", priorite:"moyenne", lien:""},
-  {id:9,  titre:"Protocole pour les interactions avec les 'gens de bonne famille'",
-   desc:"Préparer des ancrages cognitifs avant les situations déclenchantes. Se rappeler de sa carte de valeur et de ses réussites concrètes.",
-   cat:"relationnel", statut:"todo", priorite:"moyenne", lien:""},
-  // SITUATIONS
-  {id:10, titre:"Travailler le déclencheur HCR 2015 avec un professionnel",
-   desc:"La pensée suicidaire de 2015 mérite un travail approfondi avec un thérapeute. Ce n'est pas à traiter seul.",
-   cat:"situation", statut:"todo", priorite:"haute", lien:""},
-  {id:11, titre:"Protocole pour les lieux à risque (bars, lieux associés)",
-   desc:"Identifier les lieux déclencheurs. Préparer un protocole d'action : ancrage, respiration, contact de soutien.",
-   cat:"situation", statut:"encours", priorite:"haute", lien:""},
-  {id:12, titre:"Travailler la semaine des données 2024 (hôtel Stardland)",
-   desc:"Analyser en séance TCC ce qui s'est passé. Identifier les distorsions, les besoins non satisfaits, les leçons.",
-   cat:"situation", statut:"todo", priorite:"moyenne", lien:""},
-  {id:13, titre:"Travailler le deuil de Mama Toutou",
-   desc:"Identifier comment ce deuil a affecté les croyances et pensées automatiques. Travail de deuil structuré.",
-   cat:"situation", statut:"todo", priorite:"haute", lien:""},
-  // CONSTRUCTION DE SOI
-  {id:14, titre:"Continuer sans alcool → objectif 6 mois puis 1 an",
-   desc:"Capitaliser sur les 70 jours acquis. Fixer des jalons : 100 jours, 6 mois, 1 an. Célébrer chaque palier.",
-   cat:"construction", statut:"encours", priorite:"haute", lien:""},
-  {id:15, titre:"Fonder une famille — clarifier concrètement ce projet",
-   desc:"Écrire ce que 'fonder une famille' signifie concrètement. Quelles étapes ? Quel profil de partenaire ? Quel délai ?",
-   cat:"construction", statut:"todo", priorite:"haute", lien:""},
-  {id:16, titre:"Construire une pratique de régulation émotionnelle quotidienne",
-   desc:"Méditation active 10 min + 5 min d'écriture chaque matin. Tenir le cap 90 jours consécutifs.",
-   cat:"construction", statut:"encours", priorite:"haute", lien:""},
-  {id:17, titre:"Développer une pratique de gratitude quotidienne",
-   desc:"Chaque soir avant de dormir, noter 3 choses positives de la journée. Contrebalancer le filtre négatif.",
-   cat:"construction", statut:"todo", priorite:"moyenne", lien:""},
-  {id:18, titre:"Construire son projet professionnel post-ONU",
-   desc:"Identifier les compétences acquises, les certifications en cours, et définir la prochaine étape de carrière claire.",
-   cat:"construction", statut:"encours", priorite:"haute", lien:""},
+  {id:1,  titre:"Travailler la pensée 'Tu es un looser'",desc:"Séances TCC dédiées + journal de preuves contraires. Chaque semaine, lister 3 preuves concrètes que cette pensée est fausse.",cat:"cognitif", statut:"encours", priorite:"haute", lien:""},
+  {id:2,  titre:"Travailler la comparaison sociale",desc:"Restructurer la pensée 'Regarde comment les autres réussissent'. Travailler l'ancrage dans ses propres valeurs et son propre rythme.",cat:"cognitif", statut:"encours", priorite:"haute", lien:""},
+  {id:3,  titre:"Travailler la peur de mourir seul et pauvre",desc:"Clarifier concrètement ce que signifient 'seul' et 'pauvre'. Construire un plan de vie concret qui contredit cette prédiction.",cat:"cognitif", statut:"todo", priorite:"haute", lien:""},
+  {id:4,  titre:"Travailler l'identité indépendante du regard des autres",desc:"Construire une identité solide basée sur ses valeurs et non sur l'approbation extérieure. Pratiquer la séparation acte/personne.",cat:"cognitif", statut:"encours", priorite:"haute", lien:""},
+  {id:5,  titre:"Journal de preuves contraires hebdomadaire",desc:"Chaque dimanche, noter 5 preuves que les pensées automatiques négatives sont fausses. Alimenter la carte de valeur.",cat:"cognitif", statut:"todo", priorite:"moyenne", lien:""},
+  {id:6,  titre:"Travailler les déclencheurs liés à la famille paternelle",desc:"Identifier les pensées automatiques activées par la famille paternelle. Préparer des contre-arguments solides avant les interactions.",cat:"relationnel", statut:"todo", priorite:"haute", lien:""},
+  {id:7,  titre:"Travailler le deuil de la relation avec Minouche",desc:"Acceptation de la fin de la relation. Identifier ce que cette relation a appris, ce qui reste, et comment avancer.",cat:"relationnel", statut:"todo", priorite:"haute", lien:""},
+  {id:8,  titre:"Travailler les figures d'autorité professionnelle",desc:"Identifier les distorsions activées avec les chefs. Travailler l'assertivité et la communication directe en contexte professionnel.",cat:"relationnel", statut:"todo", priorite:"moyenne", lien:""},
+  {id:9,  titre:"Protocole pour les interactions avec les 'gens de bonne famille'",desc:"Préparer des ancrages cognitifs avant les situations déclenchantes. Se rappeler de sa carte de valeur et de ses réussites concrètes.",cat:"relationnel", statut:"todo", priorite:"moyenne", lien:""},
+  {id:10, titre:"Travailler le déclencheur HCR 2015 avec un professionnel",desc:"La pensée suicidaire de 2015 mérite un travail approfondi avec un thérapeute. Ce n'est pas à traiter seul.",cat:"situation", statut:"todo", priorite:"haute", lien:""},
+  {id:11, titre:"Protocole pour les lieux à risque (bars, lieux associés)",desc:"Identifier les lieux déclencheurs. Préparer un protocole d'action : ancrage, respiration, contact de soutien.",cat:"situation", statut:"encours", priorite:"haute", lien:""},
+  {id:12, titre:"Travailler la semaine des données 2024 (hôtel Stardland)",desc:"Analyser en séance TCC ce qui s'est passé. Identifier les distorsions, les besoins non satisfaits, les leçons.",cat:"situation", statut:"todo", priorite:"moyenne", lien:""},
+  {id:13, titre:"Travailler le deuil de Mama Toutou",desc:"Identifier comment ce deuil a affecté les croyances et pensées automatiques. Travail de deuil structuré.",cat:"situation", statut:"todo", priorite:"haute", lien:""},
+  {id:14, titre:"Continuer sans alcool → objectif 6 mois puis 1 an",desc:"Capitaliser sur les 70 jours acquis. Fixer des jalons : 100 jours, 6 mois, 1 an. Célébrer chaque palier.",cat:"construction", statut:"encours", priorite:"haute", lien:""},
+  {id:15, titre:"Fonder une famille — clarifier concrètement ce projet",desc:"Écrire ce que 'fonder une famille' signifie concrètement. Quelles étapes ? Quel profil de partenaire ? Quel délai ?",cat:"construction", statut:"todo", priorite:"haute", lien:""},
+  {id:16, titre:"Construire une pratique de régulation émotionnelle quotidienne",desc:"Méditation active 10 min + 5 min d'écriture chaque matin. Tenir le cap 90 jours consécutifs.",cat:"construction", statut:"encours", priorite:"haute", lien:""},
+  {id:17, titre:"Développer une pratique de gratitude quotidienne",desc:"Chaque soir avant de dormir, noter 3 choses positives de la journée. Contrebalancer le filtre négatif.",cat:"construction", statut:"todo", priorite:"moyenne", lien:""},
+  {id:18, titre:"Construire son projet professionnel post-ONU",desc:"Identifier les compétences acquises, les certifications en cours, et définir la prochaine étape de carrière claire.",cat:"construction", statut:"encours", priorite:"haute", lien:""},
 ];
 
 // HABITS (Tracker)
@@ -494,10 +451,8 @@ function getHumeurColor(score){
   return"#dc2626";
 }
 
-// Correlation computation
 function computeCorrelations(){
   loadAllTrackerData();
-  // Build day-level data: date -> {habitCount, humeur}
   const days=[];
   const allKeys=new Set([...Object.keys(state.trackerAllData)]);
   allKeys.forEach(mk=>{
@@ -505,7 +460,6 @@ function computeCorrelations(){
     const parts=mk.split("_");const y=parseInt(parts[1]),mo=parseInt(parts[2]);
     const dmax=daysInMonth(y,mo);
     for(let d=1;d<=dmax;d++){
-      // don't include future days
       if(y>TOD.y||(y===TOD.y&&mo>TOD.m)||(y===TOD.y&&mo===TOD.m&&d>TOD.d))continue;
       const hk=humeurKey(y,mo,d);
       const humScore=state.humeur[hk]?.score;
@@ -515,8 +469,6 @@ function computeCorrelations(){
       }
     }
   });
-
-  // Group by habit bracket: 0-25%, 26-50%, 51-75%, 76-100%
   const brackets=[
     {label:"0–25%",min:0,max:25,days:[],color:"#dc2626"},
     {label:"26–50%",min:26,max:50,days:[],color:"#d97706"},
@@ -528,8 +480,6 @@ function computeCorrelations(){
     if(b)b.days.push(day.humScore);
   });
   brackets.forEach(b=>{b.avgHumeur=b.days.length>0?Math.round(b.days.reduce((a,v)=>a+v,0)/b.days.length*10)/10:null;});
-
-  // Per-habit correlation: days with habit done vs not done → avg humeur
   const habitCorr=HABITS.map(h=>{
     const withHabit=[],withoutHabit=[];
     days.forEach(day=>{
@@ -543,12 +493,9 @@ function computeCorrelations(){
     const impact=avgWith!==null&&avgWithout!==null?Math.round((avgWith-avgWithout)*10)/10:null;
     return{habit:h,avgWith,avgWithout,impact,n:withHabit.length};
   }).filter(h=>h.impact!==null&&h.n>=3).sort((a,b)=>Math.abs(b.impact)-Math.abs(a.impact));
-
-  // TCC sessions correlation with previous week habits
   const tccCorr=[];
   state.records.forEach(r=>{
     const d=new Date(r.date);
-    // Count habits in the 7 days before this session
     let weekHabits=0,weekPossible=0;
     for(let i=1;i<=7;i++){
       const dd=new Date(d);dd.setDate(dd.getDate()-i);
@@ -560,8 +507,6 @@ function computeCorrelations(){
     const reduction=(r.convictionAvant||0)-(r.convictionApres||0);
     tccCorr.push({weekPct,reduction,convBefore:r.convictionAvant,convAfter:r.convictionApres});
   });
-
-  // Group TCC sessions by discipline level
   const tccBrackets=[
     {label:"Semaine < 40%",min:0,max:39,sessions:[],color:"#dc2626"},
     {label:"Semaine 40–60%",min:40,max:60,sessions:[],color:"#d97706"},
@@ -573,7 +518,6 @@ function computeCorrelations(){
     if(b)b.sessions.push(s.reduction);
   });
   tccBrackets.forEach(b=>{b.avgReduction=b.sessions.length>0?Math.round(b.sessions.reduce((a,v)=>a+v,0)/b.sessions.length*10)/10:null;b.n=b.sessions.length;});
-
   return{days,brackets,habitCorr,tccBrackets,total:days.length};
 }
 
@@ -739,23 +683,18 @@ ${last?`<div class="section-title">Dernière séance</div><div class="record-car
 function renderCartographie(){
   if(state.cartoEdit!==null){return renderCartoEditDetail();}
   if(state.cartoDetail!==null){return renderCartoViewDetail();}
-
   const tab=state.cartoTab;
   const items=state.carto[tab]||[];
   const catInfo=CARTO_CATS.find(c=>c.key===tab);
-
   const done=items.filter(i=>i.statut==="done").length;
   const review=items.filter(i=>i.statut==="a-revoir").length;
   const blank=items.filter(i=>!i.statut||i.statut==="blank").length;
-
   return `<button class="back-btn" onclick="setView('home')">← Retour</button>
 <div class="section-header"><h2>🧭 Cartographie TCC</h2></div>
-<p class="sub">Explore et travaille tes déclencheurs avec la méthode TCC. Chaque entrée peut être liée à une séance.</p>
-
+<p class="sub">Explore et travaille tes déclencheurs avec la méthode TCC.</p>
 <div class="carto-tabs">
 ${CARTO_CATS.map(c=>`<button class="carto-tab ${state.cartoTab===c.key?"carto-tab-on":"carto-tab-off"}" onclick="state.cartoTab='${c.key}';state.cartoDetail=null;state.cartoEdit=null;render()">${c.icon} ${c.label.split(" ").slice(1).join(" ")}</button>`).join("")}
 </div>
-
 <div class="card" style="padding:14px;margin-bottom:14px">
 <div style="font-weight:700;color:var(--sky-deeper);margin-bottom:8px">${catInfo.icon} ${catInfo.label}</div>
 <div style="display:flex;gap:8px;flex-wrap:wrap">
@@ -764,7 +703,6 @@ ${CARTO_CATS.map(c=>`<button class="carto-tab ${state.cartoTab===c.key?"carto-ta
 <span class="badge badge-green">✅ ${done} traité(s)</span>
 </div>
 </div>
-
 ${items.map(item=>{
   const statusLabel=item.statut==="a-revoir"?"⚠️ À revoir":item.statut==="done"?"✅ Traité":"📝 À explorer";
   const statusCls=item.statut==="a-revoir"?"carto-status-review":item.statut==="done"?"carto-status-done":"carto-status-blank";
@@ -777,7 +715,6 @@ ${items.map(item=>{
 ${hasContent?`<div class="carto-row-meta">${item.emotions?`❤️ ${esc(item.emotions.substring(0,50))}`:""} ${item.pensee?`💭 ${esc(item.pensee.substring(0,40))}`:""}</div>`:""}
 </div>`;
 }).join("")}
-
 <button class="btn btn-secondary mt16" style="border-style:dashed" onclick="cartoAddNew('${tab}')">+ Ajouter une entrée</button>`;
 }
 
@@ -787,53 +724,40 @@ function renderCartoViewDetail(){
   const item=items.find(i=>i.id===id);
   if(!item)return"";
   const catInfo=CARTO_CATS.find(c=>c.key===cat);
-
   const statusLabel=item.statut==="a-revoir"?"⚠️ À revoir":item.statut==="done"?"✅ Traité":"📝 À explorer";
   const statusCls=item.statut==="a-revoir"?"carto-status-review":item.statut==="done"?"carto-status-done":"carto-status-blank";
-
   const aiRes=state.cartoAIResult||"";
-
   return `<button class="back-btn" onclick="state.cartoDetail=null;state.cartoAIResult=null;render()">← Retour à la cartographie</button>
 <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
 <div style="font-size:1.2rem">${catInfo.icon}</div>
 <div><div style="font-weight:800;color:var(--sky-deeper);font-size:1rem">${esc(item.titre)}</div>
 <span class="carto-status ${statusCls}">${statusLabel}</span></div>
 </div>
-
 ${item.pensee?`<div class="carto-detail-field"><span class="carto-detail-label">💭 Pensée automatique</span><div class="carto-detail-value">${esc(item.pensee)}</div></div>`:""}
 ${item.emotions?`<div class="carto-detail-field"><span class="carto-detail-label">❤️ Émotions / comportements</span><div class="carto-detail-value">${esc(item.emotions)}${item.comportements?" · "+esc(item.comportements):""}</div></div>`:""}
 ${item.commentaire?`<div class="carto-detail-field"><span class="carto-detail-label">📝 Commentaire</span><div class="carto-detail-value">${esc(item.commentaire)}</div></div>`:""}
-
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
 <button class="btn-sm" onclick="state.cartoEdit={cat:'${cat}',id:${id}};state.cartoAIResult=null;render()">✏️ Modifier</button>
 ${item.pensee?`<button class="btn-sm" onclick="state.form=emptyForm();state.form.pensee='${item.pensee.replace(/'/g,"\\'")}';state.step='pensee';state.cartoDetail=null;setView('new')">🔄 Ouvrir en séance TCC</button>`:""}
 </div>
-
 <div class="card" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd">
 <div style="font-weight:700;color:#1d4ed8;margin-bottom:8px;font-size:.875rem">✦ Analyse IA de cette entrée</div>
 ${aiRes?`<div style="font-size:.875rem;color:#1e3a5f;line-height:1.6;white-space:pre-wrap">${esc(aiRes)}</div>`:`<p style="font-size:.875rem;color:var(--text3);margin-bottom:10px">Génère une analyse TCC personnalisée basée sur ta carte de valeur.</p>
 <button class="btn btn-primary" onclick="state.cartoEdit={cat:'${cat}',id:${id},readonly:true};askAI('carto_analyse')" ${state.ai.loading?"disabled":""} style="padding:12px">${state.ai.loading&&state.ai.field==="carto_analyse"?"⏳ Génération...":"✦ Analyser avec l'IA"}</button>`}
 ${state.ai.loading&&state.ai.field==="carto_analyse"?`<div class="ai-text pulse" style="font-size:.875rem">Analyse en cours...</div>`:""}
 </div>
-
 <button class="btn btn-danger mt12" onclick="cartoDelete('${cat}',${id})">🗑️ Supprimer cette entrée</button>`;
 }
 
 function renderCartoEditDetail(){
   const {cat,id,readonly}=state.cartoEdit;
-  if(readonly){
-    // Triggered by AI but we stay on view detail after
-    return renderCartoViewDetail();
-  }
+  if(readonly){return renderCartoViewDetail();}
   const items=state.carto[cat]||[];
   const item=id?items.find(i=>i.id===id):null;
   const isNew=!id;
   const catInfo=CARTO_CATS.find(c=>c.key===cat);
-
-  // Read current form values from DOM IDs when saving
   return `<button class="back-btn" onclick="state.cartoEdit=null;render()">← Annuler</button>
 <h2>${isNew?"Nouvelle entrée":"Modifier l'entrée"} · ${catInfo.icon} ${catInfo.label}</h2>
-
 <div class="card">
 <div class="form-group mb12">
 <label class="form-label">📌 Titre / Nom</label>
@@ -871,32 +795,22 @@ function renderCartoEditDetail(){
 
 function cartoSave(cat,id){
   const get=sid=>document.getElementById(sid)?.value||"";
-  const data={
-    titre:get("ce_titre"),pensee:get("ce_pensee"),emotions:get("ce_emotions"),
-    comportements:get("ce_comportements"),commentaire:get("ce_commentaire"),statut:get("ce_statut")
-  };
+  const data={titre:get("ce_titre"),pensee:get("ce_pensee"),emotions:get("ce_emotions"),comportements:get("ce_comportements"),commentaire:get("ce_commentaire"),statut:get("ce_statut")};
   if(!data.titre.trim()){alert("Le titre est obligatoire.");return;}
   if(!state.carto[cat])state.carto[cat]=[];
   if(id){
     const idx=state.carto[cat].findIndex(i=>i.id===id);
     if(idx>=0)state.carto[cat][idx]={...state.carto[cat][idx],...data};
-    state.cartoEdit=null;
-    state.cartoDetail={cat,id};
+    state.cartoEdit=null;state.cartoDetail={cat,id};
   }else{
     const newId=Date.now();
     state.carto[cat].push({id:newId,...data});
-    state.cartoEdit=null;
-    state.cartoDetail={cat,id:newId};
+    state.cartoEdit=null;state.cartoDetail={cat,id:newId};
   }
   saveCarto();render();
 }
 
-function cartoAddNew(cat){
-  state.cartoEdit={cat,id:null};
-  state.cartoAIResult=null;
-  render();
-}
-
+function cartoAddNew(cat){state.cartoEdit={cat,id:null};state.cartoAIResult=null;render();}
 function cartoDelete(cat,id){
   if(!confirm("Supprimer cette entrée ?"))return;
   state.carto[cat]=state.carto[cat].filter(i=>i.id!==id);
@@ -911,12 +825,10 @@ function renderTracker(){
   const days=daysInMonth(y,m);
   const DAYS=[];for(let i=1;i<=days;i++)DAYS.push(i);
   const isCurMonth=y===TOD.y&&m===TOD.m;
-
   let totalDone=0;Object.values(state.trackerData).forEach(v=>{if(v)totalDone++;});
   const totalPossible=HABITS.length*days;
   const monthPct=Math.round((totalDone/totalPossible)*100);
   const todayScore=isCurMonth?getDayScore(TOD.d):0;
-
   let html="";
   html+=`<div class="nav-month"><button class="nav-btn" onclick="prevTrackerMonth()">‹</button><span class="nav-label">${MONTHS[m]} ${y}</span><button class="nav-btn" onclick="nextTrackerMonth()">›</button></div>`;
   html+=`<div class="stats-grid-3">
@@ -943,8 +855,6 @@ function renderTracker(){
   html+=`<tr class="footer-row"><td class="habit-col">Score du jour</td>`;
   DAYS.forEach(d=>{const s=getDayScore(d);const p=Math.round((s/HABITS.length)*100);const isToday=isCurMonth&&d===TOD.d;html+=`<td class="day-cell${isToday?" today-col":""}" style="text-align:center"><span class="score-mini" style="color:${pctColor(p)}">${s>0?s:""}</span></td>`;});
   html+=`<td></td></tr>`;
-
-  // Humeur row
   html+=`<tr style="background:#fef9c3;border-top:2px solid #fde047"><td class="habit-col" style="background:#fef9c3;color:#713f12;font-weight:700">😊 Humeur /10</td>`;
   DAYS.forEach(d=>{
     const isFuture=y>TOD.y||(y===TOD.y&&m>TOD.m)||(y===TOD.y&&m===TOD.m&&d>TOD.d);
@@ -954,18 +864,13 @@ function renderTracker(){
     const emoji=score!==undefined?HUMEUR_EMOJIS[score-1]:"·";
     const color=score!==undefined?getHumeurColor(score):"#cbd5e1";
     html+=`<td class="day-cell${isToday?" today-col":""}" style="text-align:center">`;
-    if(!isFuture){
-      html+=`<button onclick="showHumeurPicker(${y},${m},${d})" style="background:none;border:none;cursor:pointer;font-size:.9rem;line-height:1;color:${color};width:24px;height:24px;display:flex;align-items:center;justify-content:center;margin:0 auto;border-radius:6px;${score?"background:"+color+"22":""}">${emoji}</button>`;
-    }else{html+=`<span style="color:#e2e8f0;font-size:.7rem">·</span>`;}
+    if(!isFuture){html+=`<button onclick="showHumeurPicker(${y},${m},${d})" style="background:none;border:none;cursor:pointer;font-size:.9rem;line-height:1;color:${color};width:24px;height:24px;display:flex;align-items:center;justify-content:center;margin:0 auto;border-radius:6px;${score?"background:"+color+"22":""}">${emoji}</button>`;}
+    else{html+=`<span style="color:#e2e8f0;font-size:.7rem">·</span>`;}
     html+=`</td>`;
   });
   html+=`<td class="score-col"><div class="score-mini" style="color:#713f12">${(()=>{const scores=DAYS.map(d=>{const hk=humeurKey(y,m,d);return state.humeur[hk]?.score;}).filter(s=>s!==undefined);return scores.length>0?(Math.round(scores.reduce((a,v)=>a+v,0)/scores.length*10)/10)+"/10":"—";})()}</div></td>`;
-  html+=`</tr>`;
-
-  html+=`</tbody></table></div>`;
+  html+=`</tr></tbody></table></div>`;
   html+=`<p class="hint">Appuie sur une case habitude pour cocher · Clique 😊 pour noter ton humeur · Navigue avec ‹ ›</p>`;
-
-  // Humeur picker modal
   html+=`<div id="humeurModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:100;align-items:flex-end;justify-content:center" onclick="if(event.target===this)this.style.display='none'">
 <div style="background:var(--card);border-radius:20px 20px 0 0;padding:24px;width:100%;max-width:500px">
 <div style="font-weight:800;color:var(--sky-deeper);margin-bottom:4px;font-size:1rem" id="humeurModalTitle">Comment tu te sens ?</div>
@@ -974,7 +879,6 @@ function renderTracker(){
 <div style="text-align:center;font-size:.8rem;color:var(--text3)" id="humeurSelLabel"></div>
 <button onclick="document.getElementById('humeurModal').style.display='none'" style="width:100%;margin-top:16px;padding:12px;border:none;border-radius:12px;background:var(--sky-light);color:var(--sky-deeper);font-weight:700;cursor:pointer">Fermer</button>
 </div></div>`;
-
   return html;
 }
 
@@ -983,32 +887,22 @@ function renderTrackerDashboard(){
   let totalAllDone=0,totalAllPossible=0;
   HABITS.forEach(h=>{totalAllDone+=dash.habitTotals[h];totalAllPossible+=dash.habitPossible[h];});
   const globalPct=totalAllPossible>0?Math.round((totalAllDone/totalAllPossible)*100):0;
-
   let html=`<div class="stats-grid-3">
 <div class="stat-card-mini"><div class="stat-val-mid" style="color:${pctColor(globalPct)}">${totalAllDone}/${totalAllPossible}</div><div class="stat-label-sm">Cochées (${globalPct}%)</div></div>
 <div class="stat-card-mini"><div class="stat-val-mid" style="color:var(--sky-deeper)">${HABITS.length}</div><div class="stat-label-sm">Habitudes</div></div>
 <div class="stat-card-mini"><div class="stat-val-mid" style="color:var(--orange)">${dash.streak}j</div><div class="stat-label-sm">Streak</div></div>
 </div>`;
-
   if(dash.monthScores.length>0){
-    html+=`<div class="dash-card"><div class="dash-card-title">📅 Score par mois</div>`;
+    html+=`<div class="dash-card"><div style="font-weight:700;margin-bottom:12px">📅 Score par mois</div>`;
     dash.monthScores.forEach(ms=>{html+=`<div class="bar-row"><div class="bar-label" style="width:110px">${MONTHS[ms.mo]} ${ms.y}</div><div class="bar-track"><div class="bar-fill" style="background:${pctColor(ms.pct)};width:${ms.pct}%"></div></div><div class="bar-count" style="color:${pctColor(ms.pct)};width:60px">${ms.done}/${ms.total} <span style="font-size:.65rem">(${ms.pct}%)</span></div></div>`;});
     html+=`</div>`;
   }
-
-  html+=`<div class="dash-card"><div class="dash-card-title">💪 Jours pratiqués (total cumulé)</div>`;
+  html+=`<div class="dash-card"><div style="font-weight:700;margin-bottom:12px">💪 Jours pratiqués (total cumulé)</div>`;
   dash.sorted.forEach(h=>{
     const p=dash.habitPossible[h]>0?Math.round((dash.habitTotals[h]/dash.habitPossible[h])*100):0;
-    html+=`<div style="margin-bottom:12px">
-<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px">
-<div style="font-size:.78rem;font-weight:600;color:var(--text);flex:1;padding-right:8px">${esc(h)}</div>
-<div style="font-size:.95rem;font-weight:800;color:${pctColor(p)};white-space:nowrap">${dash.habitTotals[h]} j <span style="font-size:.7rem;font-weight:500;color:var(--text3)">(${p}%)</span></div>
-</div>
-<div class="bar-track"><div class="bar-fill" style="background:${pctColor(p)};width:${p}%"></div></div>
-</div>`;
+    html+=`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:4px"><div style="font-size:.78rem;font-weight:600;color:var(--text);flex:1;padding-right:8px">${esc(h)}</div><div style="font-size:.95rem;font-weight:800;color:${pctColor(p)};white-space:nowrap">${dash.habitTotals[h]} j <span style="font-size:.7rem;font-weight:500;color:var(--text3)">(${p}%)</span></div></div><div class="bar-track"><div class="bar-fill" style="background:${pctColor(p)};width:${p}%"></div></div></div>`;
   });
   html+=`</div>`;
-
   html+=`<div class="insight-card"><div style="font-weight:700;color:#1d4ed8;margin-bottom:10px;font-size:.9rem">💡 Insights</div>`;
   if(totalAllPossible===0){html+=`<p class="insight-text">Complète des séances pour voir tes insights.</p>`;}
   else{
@@ -1039,7 +933,6 @@ ${e}<span style="font-size:.45rem;color:var(--text3);font-weight:600">${i+1}</sp
 
 function renderCorrelations(){
   const corr=computeCorrelations();
-
   if(corr.total<5){
     return `<div class="dash-card" style="text-align:center;padding:30px">
 <div style="font-size:2rem;margin-bottom:8px">📊</div>
@@ -1047,112 +940,34 @@ function renderCorrelations(){
 <p class="sub" style="margin:0">Note ton humeur chaque jour dans le tracker pendant au moins 5 jours pour voir les corrélations.</p>
 </div>`;
   }
-
   let html=``;
-
-  // Humeur vs habitudes bracket chart
-  html+=`<div class="dash-card">
-<div class="dash-card-title">😊 Humeur moyenne selon le niveau de discipline</div>
-<p style="font-size:.78rem;color:var(--text3);margin-bottom:14px">Plus tu coches d'habitudes, comment évolue ton humeur ?</p>`;
-  const maxHumeur=Math.max(...corr.brackets.filter(b=>b.avgHumeur!==null).map(b=>b.avgHumeur),1);
+  html+=`<div class="dash-card"><div style="font-weight:700;margin-bottom:12px">😊 Humeur moyenne selon le niveau de discipline</div>`;
   corr.brackets.forEach(b=>{
-    if(b.avgHumeur===null){
-      html+=`<div class="corr-row"><span class="corr-dot" style="background:#e2e8f0"></span><span class="corr-label">${b.label}</span><span style="font-size:.75rem;color:var(--text3)">Pas assez de données</span></div>`;
-      return;
-    }
+    if(b.avgHumeur===null){html+=`<div class="corr-row"><span class="corr-dot" style="background:#e2e8f0"></span><span class="corr-label">${b.label}</span><span style="font-size:.75rem;color:var(--text3)">Pas assez de données</span></div>`;return;}
     const barW=Math.round(b.avgHumeur/10*100);
-    html+=`<div style="margin-bottom:12px">
-<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
-<span style="font-size:.8rem;font-weight:700;color:var(--text)">${b.label}</span>
-<span style="font-size:1rem;font-weight:800;color:${b.color}">${HUMEUR_EMOJIS[Math.round(b.avgHumeur)-1]} ${b.avgHumeur}/10</span>
-</div>
-<div class="bar-track"><div class="bar-fill" style="background:${b.color};width:${barW}%"></div></div>
-<div style="font-size:.7rem;color:var(--text3);margin-top:3px">${b.days.length} jour(s) avec humeur notée</div>
-</div>`;
+    html+=`<div style="margin-bottom:12px"><div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px"><span style="font-size:.8rem;font-weight:700;color:var(--text)">${b.label}</span><span style="font-size:1rem;font-weight:800;color:${b.color}">${HUMEUR_EMOJIS[Math.round(b.avgHumeur)-1]} ${b.avgHumeur}/10</span></div><div class="bar-track"><div class="bar-fill" style="background:${b.color};width:${barW}%"></div></div><div style="font-size:.7rem;color:var(--text3);margin-top:3px">${b.days.length} jour(s) avec humeur notée</div></div>`;
   });
   html+=`</div>`;
-
-  // Per-habit impact
   if(corr.habitCorr.length>0){
-    html+=`<div class="dash-card">
-<div class="dash-card-title">💪 Impact de chaque habitude sur l'humeur</div>
-<p style="font-size:.78rem;color:var(--text3);margin-bottom:14px">Différence d'humeur moyenne entre les jours où tu pratiques vs les jours où tu ne pratiques pas.</p>`;
+    html+=`<div class="dash-card"><div style="font-weight:700;margin-bottom:12px">💪 Impact de chaque habitude sur l'humeur</div>`;
     corr.habitCorr.slice(0,8).forEach(h=>{
       const color=h.impact>0?"#059669":h.impact<0?"#dc2626":"#94a3b8";
       const sign=h.impact>0?"+":"";
-      html+=`<div style="margin-bottom:12px;padding:10px 12px;background:var(--sky-soft);border-radius:12px;border:1px solid var(--border)">
-<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-<span style="font-size:.8rem;font-weight:700;color:var(--text);flex:1;padding-right:8px">${esc(h.habit)}</span>
-<span style="font-size:.95rem;font-weight:800;color:${color};white-space:nowrap">${sign}${h.impact} pts</span>
-</div>
-<div style="display:flex;gap:12px;font-size:.72rem;color:var(--text3)">
-<span>✅ Avec : <strong style="color:${color}">${h.avgWith}/10</strong></span>
-<span>❌ Sans : <strong style="color:var(--text3)">${h.avgWithout}/10</strong></span>
-<span style="color:var(--text3)">(${h.n} jours)</span>
-</div>
-</div>`;
+      html+=`<div style="margin-bottom:12px;padding:10px 12px;background:var(--sky-soft);border-radius:12px;border:1px solid var(--border)"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"><span style="font-size:.8rem;font-weight:700;color:var(--text);flex:1;padding-right:8px">${esc(h.habit)}</span><span style="font-size:.95rem;font-weight:800;color:${color};white-space:nowrap">${sign}${h.impact} pts</span></div><div style="display:flex;gap:12px;font-size:.72rem;color:var(--text3)"><span>✅ Avec : <strong style="color:${color}">${h.avgWith}/10</strong></span><span>❌ Sans : <strong style="color:var(--text3)">${h.avgWithout}/10</strong></span><span style="color:var(--text3)">(${h.n} jours)</span></div></div>`;
     });
     html+=`</div>`;
   }
-
-  // TCC × discipline correlation
-  if(corr.tccBrackets.some(b=>b.n>0)){
-    html+=`<div class="dash-card">
-<div class="dash-card-title">🧠 Discipline de la semaine → efficacité TCC</div>
-<p style="font-size:.78rem;color:var(--text3);margin-bottom:14px">Réduction moyenne de conviction en séance TCC selon ton niveau de discipline la semaine précédente.</p>`;
-    corr.tccBrackets.forEach(b=>{
-      if(b.n===0){
-        html+=`<div class="corr-row"><span class="corr-dot" style="background:#e2e8f0"></span><span class="corr-label">${b.label}</span><span style="font-size:.75rem;color:var(--text3)">—</span></div>`;
-        return;
-      }
-      const isPositive=b.avgReduction>0;
-      html+=`<div style="margin-bottom:12px">
-<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px">
-<span style="font-size:.8rem;font-weight:700;color:var(--text)">${b.label}</span>
-<span style="font-size:1rem;font-weight:800;color:${b.color}">${isPositive?"−":"+"}${Math.abs(b.avgReduction)}% conviction</span>
-</div>
-<div style="background:var(--sky-mid);border-radius:99px;height:10px;overflow:hidden">
-<div style="height:10px;border-radius:99px;background:${b.color};width:${Math.min(Math.abs(b.avgReduction)*2,100)}%;transition:width .5s"></div>
-</div>
-<div style="font-size:.7rem;color:var(--text3);margin-top:3px">${b.n} séance(s)</div>
-</div>`;
-    });
-    html+=`<div class="insight-card" style="margin-top:8px"><div class="insight-text">
-${(()=>{
-  const best=corr.tccBrackets.filter(b=>b.avgReduction!==null&&b.n>0).sort((a,b2)=>b2.avgReduction-a.avgReduction)[0];
-  if(!best)return"Pas assez de données pour un insight.";
-  if(best.avgReduction>0)return`💡 Tes séances TCC sont plus efficaces quand ta semaine est disciplinée (${best.label}) — la conviction baisse de <strong>${best.avgReduction}%</strong> en moyenne.`;
-  return`💡 Complète plus de séances pour voir la corrélation entre discipline et efficacité TCC.`;
-})()}
-</div></div>`;
-    html+=`</div>`;
-  }
-
-  // Humeur heatmap last 60 days
-  html+=`<div class="dash-card">
-<div class="dash-card-title">🗓️ Humeur — 60 derniers jours</div>
-<div style="display:flex;flex-wrap:wrap;gap:2px;margin-top:8px">`;
+  // Heatmap
+  html+=`<div class="dash-card"><div style="font-weight:700;margin-bottom:8px">🗓️ Humeur — 60 derniers jours</div><div style="display:flex;flex-wrap:wrap;gap:2px;margin-top:8px">`;
   for(let i=59;i>=0;i--){
     const dd=new Date();dd.setDate(dd.getDate()-i);
     const hk=humeurKey(dd.getFullYear(),dd.getMonth(),dd.getDate());
     const score=state.humeur[hk]?.score;
     const color=score!==undefined?getHumeurColor(score):"#e2e8f0";
     const opacity=score!==undefined?(0.3+score/10*0.7).toFixed(2):1;
-    const title=`${dd.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})}${score!==undefined?" : "+score+"/10 "+HUMEUR_EMOJIS[score-1]:""}`;
-    html+=`<div class="heatmap-cell" style="background:${color};opacity:${opacity}" title="${title}"></div>`;
+    html+=`<div class="heatmap-cell" style="background:${color};opacity:${opacity}" title="${dd.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})}${score!==undefined?" : "+score+"/10":""}" ></div>`;
   }
-  html+=`</div>
-<div style="display:flex;align-items:center;gap:6px;margin-top:10px;flex-wrap:wrap">
-<span style="font-size:.7rem;color:var(--text3)">Humeur :</span>
-<div style="display:flex;gap:4px;align-items:center">
-<div style="width:12px;height:12px;border-radius:3px;background:#dc2626"></div><span style="font-size:.68rem;color:var(--text3)">Bas</span>
-<div style="width:12px;height:12px;border-radius:3px;background:#d97706;margin-left:6px"></div><span style="font-size:.68rem;color:var(--text3)">Moyen</span>
-<div style="width:12px;height:12px;border-radius:3px;background:#0ea5e9;margin-left:6px"></div><span style="font-size:.68rem;color:var(--text3)">Bien</span>
-<div style="width:12px;height:12px;border-radius:3px;background:#059669;margin-left:6px"></div><span style="font-size:.68rem;color:var(--text3)">Excellent</span>
-<div style="width:12px;height:12px;border-radius:3px;background:#e2e8f0;margin-left:6px"></div><span style="font-size:.68rem;color:var(--text3)">Non noté</span>
-</div></div>
-</div>`;
-
+  html+=`</div></div>`;
   return html;
 }
 
@@ -1189,13 +1004,12 @@ function renderDashboard(){
   const sortedEmo=Object.entries(emoCount).sort((a,b)=>b[1]-a[1]).slice(0,5);
   const last7=records.slice(0,7);
   const insights=[];
-  if(sortedDist[0])insights.push(`Ta distorsion la plus fréquente est <strong>"${sortedDist[0][0]}"</strong> (${sortedDist[0][1]} fois). C'est le pattern principal à travailler.`);
+  if(sortedDist[0])insights.push(`Ta distorsion la plus fréquente est <strong>"${sortedDist[0][0]}"</strong> (${sortedDist[0][1]} fois).`);
   if(avgReduction>0)insights.push(`En moyenne, ta conviction baisse de <strong>${avgReduction}%</strong> après chaque séance.`);
   if(avgReduction<=0)insights.push(`Ta conviction ne baisse pas encore — approfondis l'étape contre-arguments.`);
-  if(sortedEmo[0])insights.push(`L'émotion dominante est <strong>"${sortedEmo[0][0]}"</strong>. Elle mérite un projet de régulation dédié.`);
+  if(sortedEmo[0])insights.push(`L'émotion dominante est <strong>"${sortedEmo[0][0]}"</strong>.`);
   if(total>=5&&lastWeek===0)insights.push(`Pas de séance cette semaine. La régularité est clé.`);
   if(lastWeek>=3)insights.push(`${lastWeek} séances cette semaine — excellente régularité.`);
-
   return `<button class="back-btn" onclick="setView('home')">← Retour</button>
 <h2>📊 Tableau de bord TCC</h2>
 <div class="stat-grid">
@@ -1263,25 +1077,9 @@ ${fields.filter(f=>f.v).map(f=>`<div class="card2"><div class="label">${f.l}</di
 }
 
 function exportAll(){
-  // Collect all tracker data from localStorage
   const trackerKeys={};
-  for(let y=2024;y<=TOD.y+2;y++){
-    for(let mo=0;mo<12;mo++){
-      const k=storageKey(y,mo);
-      const raw=localStorage.getItem(k);
-      if(raw)trackerKeys[k]=JSON.parse(raw);
-    }
-  }
-  const bundle={
-    version:1,
-    exportDate:new Date().toISOString(),
-    records:state.records,
-    carte:state.carte,
-    carto:state.carto,
-    projets:state.projets,
-    humeur:state.humeur,
-    tracker:trackerKeys,
-  };
+  for(let y=2024;y<=TOD.y+2;y++){for(let mo=0;mo<12;mo++){const k=storageKey(y,mo);const raw=localStorage.getItem(k);if(raw)trackerKeys[k]=JSON.parse(raw);}}
+  const bundle={version:1,exportDate:new Date().toISOString(),records:state.records,carte:state.carte,carto:state.carto,projets:state.projets,humeur:state.humeur,tracker:trackerKeys};
   const date=new Date().toISOString().slice(0,10);
   dl(JSON.stringify(bundle,null,2),`trialectique_backup_${date}.json`,"application/json");
 }
@@ -1295,77 +1093,27 @@ function importAll(){
     try{
       const bundle=JSON.parse(e.target.result);
       if(!bundle.version){throw new Error("Format non reconnu.");}
-      const merge=confirm(
-        `📦 Fichier du ${new Date(bundle.exportDate).toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})}\n\n`+
-        `• ${(bundle.records||[]).length} séance(s) TCC\n`+
-        `• ${Object.values(bundle.carte||{}).flat().length} éléments carte de valeur\n`+
-        `• ${Object.keys(bundle.tracker||{}).length} mois de tracker\n`+
-        `• ${(bundle.projets||[]).length} projets\n\n`+
-        `Fusionner avec tes données actuelles ?\n(OK = Fusionner · Annuler = Remplacer)`
-      );
+      const merge=confirm(`📦 Fichier du ${new Date(bundle.exportDate).toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})}\n\n• ${(bundle.records||[]).length} séance(s) TCC\n• ${Object.values(bundle.carte||{}).flat().length} éléments carte\n• ${Object.keys(bundle.tracker||{}).length} mois tracker\n• ${(bundle.projets||[]).length} projets\n\nFusionner avec tes données actuelles ?\n(OK = Fusionner · Annuler = Remplacer)`);
       if(merge){
-        // MERGE — combine without duplicates
-        if(bundle.records){
-          const existingIds=new Set(state.records.map(r=>r.id));
-          const newRecords=bundle.records.filter(r=>!existingIds.has(r.id));
-          state.records=[...state.records,...newRecords].sort((a,b)=>new Date(b.date)-new Date(a.date));
-          saveRecords(state.records);
-        }
-        if(bundle.carte){
-          Object.keys(bundle.carte).forEach(k=>{
-            if(!state.carte[k])state.carte[k]=[];
-            const existing=new Set(state.carte[k]);
-            (bundle.carte[k]||[]).forEach(v=>{if(!existing.has(v))state.carte[k].push(v);});
-          });
-          saveCarte();
-        }
-        if(bundle.carto){
-          Object.keys(bundle.carto).forEach(cat=>{
-            if(!state.carto[cat])state.carto[cat]=[];
-            const existingIds=new Set(state.carto[cat].map(i=>i.id));
-            (bundle.carto[cat]||[]).forEach(item=>{if(!existingIds.has(item.id))state.carto[cat].push(item);});
-          });
-          saveCarto();
-        }
-        if(bundle.projets){
-          const existingIds=new Set(state.projets.map(p=>p.id));
-          const newProjets=bundle.projets.filter(p=>!existingIds.has(p.id));
-          state.projets=[...state.projets,...newProjets];
-          saveProjets();
-        }
-        if(bundle.humeur){
-          Object.keys(bundle.humeur).forEach(k=>{if(!state.humeur[k])state.humeur[k]=bundle.humeur[k];});
-          saveHumeur();
-        }
-        if(bundle.tracker){
-          Object.keys(bundle.tracker).forEach(k=>{
-            const existing=JSON.parse(localStorage.getItem(k)||"{}");
-            const merged={...bundle.tracker[k],...existing};
-            localStorage.setItem(k,JSON.stringify(merged));
-          });
-        }
-        alert("✅ Fusion réussie ! Toutes les données ont été combinées.");
-      } else {
-        // REPLACE — full overwrite
+        if(bundle.records){const existingIds=new Set(state.records.map(r=>r.id));const newRecords=bundle.records.filter(r=>!existingIds.has(r.id));state.records=[...state.records,...newRecords].sort((a,b)=>new Date(b.date)-new Date(a.date));saveRecords(state.records);}
+        if(bundle.carte){Object.keys(bundle.carte).forEach(k=>{if(!state.carte[k])state.carte[k]=[];const existing=new Set(state.carte[k]);(bundle.carte[k]||[]).forEach(v=>{if(!existing.has(v))state.carte[k].push(v);});});saveCarte();}
+        if(bundle.carto){Object.keys(bundle.carto).forEach(cat=>{if(!state.carto[cat])state.carto[cat]=[];const existingIds=new Set(state.carto[cat].map(i=>i.id));(bundle.carto[cat]||[]).forEach(item=>{if(!existingIds.has(item.id))state.carto[cat].push(item);});});saveCarto();}
+        if(bundle.projets){const existingIds=new Set(state.projets.map(p=>p.id));const newProjets=bundle.projets.filter(p=>!existingIds.has(p.id));state.projets=[...state.projets,...newProjets];saveProjets();}
+        if(bundle.humeur){Object.keys(bundle.humeur).forEach(k=>{if(!state.humeur[k])state.humeur[k]=bundle.humeur[k];});saveHumeur();}
+        if(bundle.tracker){Object.keys(bundle.tracker).forEach(k=>{const existing=JSON.parse(localStorage.getItem(k)||"{}");const merged={...bundle.tracker[k],...existing};localStorage.setItem(k,JSON.stringify(merged));});}
+        alert("✅ Fusion réussie !");
+      }else{
         if(!confirm("⚠️ Cela va REMPLACER toutes tes données actuelles. Confirmer ?"))return;
         if(bundle.records){state.records=bundle.records;saveRecords(state.records);}
         if(bundle.carte){state.carte=bundle.carte;saveCarte();}
         if(bundle.carto){state.carto=bundle.carto;saveCarto();}
         if(bundle.projets){state.projets=bundle.projets;saveProjets();}
         if(bundle.humeur){state.humeur=bundle.humeur;saveHumeur();}
-        if(bundle.tracker){
-          // Clear old tracker keys then restore
-          for(let y=2024;y<=TOD.y+2;y++){for(let mo=0;mo<12;mo++)localStorage.removeItem(storageKey(y,mo));}
-          Object.keys(bundle.tracker).forEach(k=>localStorage.setItem(k,JSON.stringify(bundle.tracker[k])));
-        }
-        alert("✅ Import réussi ! Données remplacées.");
+        if(bundle.tracker){for(let y=2024;y<=TOD.y+2;y++){for(let mo=0;mo<12;mo++)localStorage.removeItem(storageKey(y,mo));}Object.keys(bundle.tracker).forEach(k=>localStorage.setItem(k,JSON.stringify(bundle.tracker[k])));}
+        alert("✅ Import réussi !");
       }
-      loadTrackerMonth();
-      input.value="";
-      render();
-    }catch(err){
-      alert("❌ Erreur lors de l'import : "+err.message+"\nVérifie que le fichier est bien un backup Trialectique.");
-    }
+      loadTrackerMonth();input.value="";render();
+    }catch(err){alert("❌ Erreur lors de l'import : "+err.message);}
   };
   reader.readAsText(file);
 }
@@ -1374,6 +1122,21 @@ function renderSettings(){
   const trackerMonths=Object.keys(localStorage).filter(k=>k.startsWith("habits_")).length;
   const totalCarteItems=Object.values(state.carte).flat().length;
   return `<button class="back-btn" onclick="setView('home')">← Retour</button><h2>⚙️ Paramètres</h2>
+
+<div class="card" style="background:linear-gradient(135deg,#d1fae5,#ecfdf5);border-color:#6ee7b7;margin-bottom:14px">
+<div style="font-weight:700;color:#065f46;margin-bottom:8px">📱 Utiliser hors ligne</div>
+<p style="font-size:.875rem;color:#1e3a5f;line-height:1.7;margin-bottom:10px">Ce fichier HTML est <strong>100% autonome</strong> — aucune ressource externe. Tes données sont stockées dans ton appareil (localStorage) et persistent entre les sessions.</p>
+<div style="background:rgba(255,255,255,.7);border-radius:12px;padding:12px;margin-bottom:10px">
+<div style="font-size:.8rem;font-weight:700;color:#065f46;margin-bottom:8px">📲 Installer sur ton appareil :</div>
+<div style="font-size:.8rem;color:#065f46;line-height:2.2">
+💾 <strong>PC / Mac :</strong> Télécharge le fichier → double-clique pour ouvrir<br>
+🍎 <strong>iPhone (Safari) :</strong> Ouvre le fichier → Partager → "Sur l'écran d'accueil"<br>
+🤖 <strong>Android (Chrome) :</strong> Menu ⋮ → "Ajouter à l'écran d'accueil"
+</div>
+</div>
+<div style="font-size:.8rem;color:#059669;font-weight:600">✅ Une fois sauvegardé, l'app fonctionne sans connexion.</div>
+${!navigator.onLine?'<div style="background:#fef3c7;border-radius:8px;padding:8px 12px;margin-top:8px;font-size:.8rem;color:#92400e;font-weight:600">📵 Tu es actuellement hors ligne — tout fonctionne normalement.</div>':''}
+</div>
 
 <div class="card">
 <div style="font-weight:700;color:var(--sky-deeper);margin-bottom:6px">🔑 Clé API Anthropic</div>
@@ -1384,12 +1147,12 @@ function renderSettings(){
 
 <div class="card mt12">
 <div style="font-weight:700;color:var(--sky-deeper);margin-bottom:4px">📤 Exporter toutes mes données</div>
-<p class="sub">Sauvegarde complète : séances TCC, tracker, cartographie, projets, carte de valeur — dans un seul fichier JSON.</p>
+<p class="sub">Sauvegarde complète en un seul fichier JSON.</p>
 <div style="background:var(--sky-soft);border-radius:12px;padding:12px;margin-bottom:12px;font-size:.8rem;color:var(--text3)">
-  📊 <strong style="color:var(--text)">${state.records.length}</strong> séance(s) TCC &nbsp;·&nbsp;
-  <strong style="color:var(--text)">${totalCarteItems}</strong> éléments carte &nbsp;·&nbsp;
-  <strong style="color:var(--text)">${trackerMonths}</strong> mois de tracker &nbsp;·&nbsp;
-  <strong style="color:var(--text)">${state.projets.length}</strong> projets
+📊 <strong style="color:var(--text)">${state.records.length}</strong> séance(s) TCC &nbsp;·&nbsp;
+<strong style="color:var(--text)">${totalCarteItems}</strong> éléments carte &nbsp;·&nbsp;
+<strong style="color:var(--text)">${trackerMonths}</strong> mois de tracker &nbsp;·&nbsp;
+<strong style="color:var(--text)">${state.projets.length}</strong> projets
 </div>
 <button class="btn btn-primary" onclick="exportAll()">📤 Exporter le backup complet</button>
 <div style="display:flex;gap:8px;margin-top:10px">
@@ -1400,24 +1163,16 @@ function renderSettings(){
 
 <div class="card mt12">
 <div style="font-weight:700;color:var(--sky-deeper);margin-bottom:4px">📥 Importer des données</div>
-<p class="sub">Importe un fichier backup Trialectique (.json). Tu pourras <strong>fusionner</strong> (combiner avec tes données actuelles) ou <strong>remplacer</strong> (écraser tout).</p>
-<div style="background:#fef9c3;border:1.5px solid #fde047;border-radius:12px;padding:12px;margin-bottom:12px;font-size:.8rem;color:#713f12">
-  ⚠️ <strong>Conseil :</strong> exporte d'abord tes données actuelles avant d'importer, au cas où.
-</div>
+<p class="sub">Importe un fichier backup Trialectique (.json). Tu pourras <strong>fusionner</strong> ou <strong>remplacer</strong>.</p>
+<div style="background:#fef9c3;border:1.5px solid #fde047;border-radius:12px;padding:12px;margin-bottom:12px;font-size:.8rem;color:#713f12">⚠️ <strong>Conseil :</strong> exporte d'abord tes données actuelles avant d'importer.</div>
 <label style="display:block;background:var(--sky-soft);border:2px dashed var(--border2);border-radius:14px;padding:20px;text-align:center;cursor:pointer;margin-bottom:10px">
-  <div style="font-size:1.5rem;margin-bottom:6px">📁</div>
-  <div style="font-weight:700;color:var(--sky-deeper);font-size:.9rem">Sélectionner le fichier backup</div>
-  <div style="font-size:.75rem;color:var(--text3);margin-top:4px">trialectique_backup_XXXX-XX-XX.json</div>
-  <input type="file" id="importFile" accept=".json" style="display:none" onchange="document.getElementById('importFileLabel').textContent=this.files[0]?.name||''"/>
+<div style="font-size:1.5rem;margin-bottom:6px">📁</div>
+<div style="font-weight:700;color:var(--sky-deeper);font-size:.9rem">Sélectionner le fichier backup</div>
+<div style="font-size:.75rem;color:var(--text3);margin-top:4px">trialectique_backup_XXXX-XX-XX.json</div>
+<input type="file" id="importFile" accept=".json" style="display:none" onchange="document.getElementById('importFileLabel').textContent=this.files[0]?.name||''"/>
 </label>
 <div id="importFileLabel" style="font-size:.8rem;color:var(--sky-deeper);font-weight:600;margin-bottom:10px;min-height:16px;text-align:center"></div>
 <button class="btn btn-success" onclick="importAll()">📥 Importer</button>
-</div>
-
-<div class="card mt12">
-<div style="font-weight:700;color:var(--sky-deeper);margin-bottom:6px">📱 Installer l'app</div>
-<p class="sub">iPhone : Safari → Partager → Sur l'écran d'accueil</p>
-<p class="sub" style="margin:0">Android : Chrome → Menu → Ajouter à l'écran d'accueil</p>
 </div>`;
 }
 
@@ -1427,14 +1182,12 @@ function renderSettings(){
 function renderNew(){
   const f=state.form;const load=field=>state.ai.loading&&state.ai.field===field;
   let content="";
-
   if(state.step==="pensee"){
     content=`<h2>💭 Quelle est la voix intérieure / pensée ?</h2><p class="sub">Ce que la voix dit, mot pour mot.</p>
 <textarea rows="5" placeholder="Ex : Je suis incompétent, je n'y arriverai jamais..." onblur="setForm('pensee',this.value)">${esc(f.pensee)}</textarea>
 <div class="mt16"><p class="sub">Niveau de conviction : <span class="strong">${f.convictionAvant}%</span></p>
 <input type="range" min="0" max="100" value="${f.convictionAvant}" oninput="setForm('convictionAvant',+this.value)"/></div>
 ${navRow(true)}`;
-
   }else if(state.step==="manifestation"){
     content=`<h2>🔍 Comment ça se manifeste ?</h2>
 <p class="sub">Distorsions cognitives</p><div class="wrap">${tags(DISTORSIONS,f.distorsions,"distorsions")}</div>
@@ -1444,24 +1197,20 @@ ${navRow(true)}`;
 <p class="sub">Intensité émotionnelle : <span class="strong">${f.intensiteInit}/100</span></p>
 <input type="range" min="0" max="100" value="${f.intensiteInit}" oninput="setForm('intensiteInit',+this.value)"/>
 ${navRow()}`;
-
   }else if(state.step==="norme"){
     const normesAuto=[...new Set(f.distorsions.flatMap(d=>(DISTORSION_DATA[d]?.normes||[])))];
     content=`<h2>⚖️ Quelle est la norme ?</h2><p class="sub">Le fait objectif et universel qui permet d'analyser cette voix.</p>
 ${normesAuto.length>0?`<p class="label" style="color:var(--sky-deeper)">📌 Normes selon tes distorsions</p>
 ${normesAuto.map(n=>`<div class="norme-card" onclick="setForm('norme','${n.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')"><div style="font-size:.875rem;color:var(--text);line-height:1.5">${esc(n)}</div><div class="norme-hint">Appuyer pour utiliser →</div></div>`).join("")}
-<div class="divider"></div><p class="label">✏️ Ou formule la tienne</p>`
-:`<p class="sub" style="font-style:italic">Sélectionne des distorsions à l'étape précédente pour voir des normes suggérées.</p>`}
+<div class="divider"></div><p class="label">✏️ Ou formule la tienne</p>`:`<p class="sub" style="font-style:italic">Sélectionne des distorsions à l'étape précédente pour voir des normes suggérées.</p>`}
 <textarea rows="4" placeholder="Ex : La perfection n'existe pas..." onblur="setForm('norme',this.value)">${esc(f.norme)}</textarea>
 ${navRow()}`;
-
   }else if(state.step==="analyse"){
     const questionsAuto=[...new Set(f.distorsions.flatMap(d=>(DISTORSION_DATA[d]?.questions||[])))];
     content=`<h2>🗣️ Analyse</h2><p class="sub">Questions pour challenger la voix.</p>
 ${questionsAuto.length>0?`<p class="label" style="color:var(--sky-deeper)">📌 Questions selon tes distorsions</p>
 ${questionsAuto.map((q,i)=>`<div class="card2"><div style="font-size:.875rem;font-weight:600;color:var(--sky-deeper);margin-bottom:8px">${esc(q)}</div>
-<textarea rows="3" placeholder="Ta réponse..." onblur="state.form.reponses['auto_${i}']=this.value">${esc(f.reponses[`auto_${i}`]||"")}</textarea></div>`).join("")}`
-:`<p class="sub" style="font-style:italic">Sélectionne des distorsions pour voir des questions personnalisées.</p>`}
+<textarea rows="3" placeholder="Ta réponse..." onblur="state.form.reponses['auto_${i}']=this.value">${esc(f.reponses[`auto_${i}`]||"")}</textarea></div>`).join("")}`:`<p class="sub" style="font-style:italic">Sélectionne des distorsions pour voir des questions personnalisées.</p>`}
 <div class="divider"></div><p class="label">✏️ Mes questions personnelles</p>
 ${(f.questions||[]).map((q,i)=>`<div class="card2" style="position:relative"><div style="font-size:.875rem;font-weight:600;margin-bottom:8px">${esc(q)}</div>
 <textarea rows="3" placeholder="Ta réponse..." onblur="state.form.reponses['custom_${i}']=this.value">${esc(f.reponses[`custom_${i}`]||"")}</textarea>
@@ -1470,7 +1219,6 @@ ${(f.questions||[]).map((q,i)=>`<div class="card2" style="position:relative"><di
 <textarea rows="2" placeholder="Ex : Est-ce que j'ai déjà vécu ça et m'en suis sorti ?" id="newQ"></textarea>
 <button class="btn btn-secondary mt8" style="padding:10px" onclick="const q=document.getElementById('newQ').value.trim();if(q){state.form.questions=[...(state.form.questions||[]),q];render();}">Ajouter</button></div>
 ${navRow()}`;
-
   }else if(state.step==="contrearguments"){
     const contreAuto=[...new Set(f.distorsions.flatMap(d=>(DISTORSION_DATA[d]?.contreArgs||[])))];
     const allCarteItems=[
@@ -1492,20 +1240,18 @@ ${contreAuto.map(item=>`<div class="suggest-item ${sel.includes(item)?"selected"
 <p class="label" style="color:var(--sky-deeper)">🗺️ Pioche dans ta carte de valeur</p>
 <div class="wrap mb12">${allCarteItems.map(item=>`<button class="tag ${carteSel.includes(item.label)?"tag-on":"tag-off"}" onclick="toggleSel('carteSelections','${item.label.replace(/'/g,"\\'").replace(/"/g,"&quot;")}')">
 ${item.cat} ${esc(item.label)}</button>`).join("")}</div>
-${carteSel.length>0?`<button class="btn btn-primary mb12" onclick="askAI('contre')" ${load("contre")?"disabled":""}>${aiBtnTxt("contre","✦ Générer depuis ma carte de valeur")}</button>`:""} 
+${carteSel.length>0?`<button class="btn btn-primary mb12" onclick="askAI('contre')" ${load("contre")?"disabled":""}>${aiBtnTxt("contre","✦ Générer depuis ma carte de valeur")}</button>`:""}
 ${aiBox(f.contreAI,"contre","setForm('contrearguments',state.form.contreAI)")}
 <div class="divider"></div>
 <span class="label">✏️ Formule ou ajuste tes contre-arguments</span>
 <textarea rows="4" placeholder="Tes contre-arguments personnels..." onblur="setForm('contrearguments',this.value)">${esc(f.contrearguments)}</textarea>
 ${navRow()}`;
-
   }else if(state.step==="ecart"){
     content=`<h2>📐 Écart constaté</h2><p class="sub">Ce qui sépare la voix de la norme.</p>
 <button class="btn btn-primary mb12" onclick="askAI('ecart')" ${load("ecart")?"disabled":""}>${aiBtnTxt("ecart","✦ Analyser l'écart avec l'IA")}</button>
 ${aiBox(f.ecartAI,"ecart","setForm('ecart',state.form.ecartAI)")}
 <textarea rows="4" placeholder="L'écart entre la voix et la norme..." onblur="setForm('ecart',this.value)">${esc(f.ecart)}</textarea>
 ${navRow()}`;
-
   }else if(state.step==="besoin"){
     const besoinsAuto=[...new Set(f.distorsions.flatMap(d=>(DISTORSION_DATA[d]?.besoins||[])))];
     const actionsAuto=[...new Set(f.distorsions.flatMap(d=>(DISTORSION_DATA[d]?.actions||[])))];
@@ -1520,7 +1266,6 @@ ${suggestList(actionsAuto,"actionSelections","Ex : Respirer 5 min, écrire 3 ré
 <p class="label" style="color:var(--sky-deeper)">🗓️ Projets (long terme)</p>
 ${suggestList(projetsAuto,"projetSelections","Ex : Méditer chaque jour, travailler la confiance...")}
 ${navRow()}`;
-
   }else if(state.step==="evaluation"){
     const cd=f.convictionAvant-f.convictionApres;const id=f.intensiteInit-f.intensiteApres;
     content=`<h2>📊 Évaluation</h2>
@@ -1537,7 +1282,6 @@ ${navRow()}`;
 <textarea rows="4" placeholder="Comment tu te sens après cette séance ?" onblur="setForm('noteLibre',this.value)">${esc(f.noteLibre)}</textarea>
 ${navRow()}`;
   }
-
   return `<button class="back-btn" onclick="setView('home')">← Annuler</button>${progressBar()}${content}`;
 }
 
@@ -1577,25 +1321,17 @@ function projetSave(){
   state.projetEdit=null;saveProjets();render();
 }
 
-// Helper: find TCC sessions linked to a project
 function getLinkedSessions(p){
   const titre=p.titre.toLowerCase();
-  const desc=(p.desc||"").toLowerCase();
   const lien=(p.lien||"").toLowerCase();
   return state.records.filter(r=>{
     const pensee=(r.pensee||"").toLowerCase();
     const projet=(r.projet||"").toLowerCase();
-    const note=(r.noteLibre||"").toLowerCase();
-    // Match if session pensee or projet field mentions the project title/lien
-    return pensee.includes(titre.substring(0,20))||
-           projet.includes(titre.substring(0,20))||
-           (lien&&pensee.includes(lien.substring(0,15)))||
-           (lien&&projet.includes(lien.substring(0,15)));
+    return pensee.includes(titre.substring(0,20))||projet.includes(titre.substring(0,20))||(lien&&pensee.includes(lien.substring(0,15)))||(lien&&projet.includes(lien.substring(0,15)));
   });
 }
 
 function renderProjets(){
-  // Edit view
   if(state.projetEdit!==null||state.projetEdit===0){
     const isNew=state.projetEdit===0;
     const p=isNew?null:state.projets.find(x=>x.id===state.projetEdit);
@@ -1624,7 +1360,6 @@ function renderProjets(){
 </div>`;
   }
 
-  // Detail view
   if(state.projetDetail!==null){
     const p=state.projets.find(x=>x.id===state.projetDetail);
     if(!p)return"";
@@ -1633,7 +1368,6 @@ function renderProjets(){
     const prioLabel=p.priorite==="haute"?"🔴 Haute":p.priorite==="moyenne"?"🟡 Moyenne":"🟢 Basse";
     const linked=getLinkedSessions(p);
     const avgReduction=linked.length>0?Math.round(linked.reduce((a,r)=>a+((r.convictionAvant||0)-(r.convictionApres||0)),0)/linked.length):null;
-
     return `<button class="back-btn" onclick="state.projetDetail=null;render()">← Retour aux projets</button>
 <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px">
 <div style="width:6px;min-height:60px;border-radius:4px;background:${cat.accent};flex-shrink:0;margin-top:4px"></div>
@@ -1646,70 +1380,20 @@ function renderProjets(){
 </div>
 </div>
 </div>
-
 ${p.desc?`<div class="card2"><span class="carto-detail-label">📝 Objectif</span><div style="font-size:.9rem;color:var(--text);line-height:1.7">${esc(p.desc)}</div></div>`:""}
 ${p.lien?`<div class="card2"><span class="carto-detail-label">🔗 Lien</span><div style="font-size:.9rem;color:var(--text2)">${esc(p.lien)}</div></div>`:""}
-
-<!-- TCC sessions liées -->
 <div class="card" style="margin-bottom:14px;${linked.length>0?"border-color:#6ee7b7;background:linear-gradient(135deg,#f0fdf4,#dcfce7)":""}">
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:${linked.length>0?12:0}px">
-<div style="font-weight:700;color:${linked.length>0?"#065f46":"var(--text3)"};font-size:.875rem">
-🧠 Séances TCC liées à ce projet
+<div style="font-weight:700;color:${linked.length>0?"#065f46":"var(--text3)"};font-size:.875rem">🧠 Séances TCC liées</div>
+<span style="font-size:1.1rem;font-weight:800;color:${linked.length>0?"#059669":"var(--text3)"}">${linked.length} séance${linked.length>1?"s":""}</span>
 </div>
-<span style="font-size:1.1rem;font-weight:800;color:${linked.length>0?"#059669":"var(--text3)"}">
-${linked.length} séance${linked.length>1?"s":""}
-</span>
-</div>
-${linked.length===0?`<p style="font-size:.8rem;color:var(--text3);margin-top:8px">Aucune séance TCC n'est encore liée à ce projet.<br>Lance une séance et mentionne ce projet dans le champ "Projets".</p>`:`
-<div style="margin-bottom:10px;padding:10px 12px;background:rgba(255,255,255,.7);border-radius:12px;display:flex;gap:16px;flex-wrap:wrap">
+${linked.length===0?`<p style="font-size:.8rem;color:var(--text3);margin-top:8px">Aucune séance TCC liée encore.</p>`:
+`<div style="margin-bottom:10px;padding:10px 12px;background:rgba(255,255,255,.7);border-radius:12px;display:flex;gap:16px;flex-wrap:wrap">
 <div style="text-align:center"><div style="font-size:1.4rem;font-weight:800;color:#059669">${linked.length}</div><div style="font-size:.7rem;color:#065f46;font-weight:600">Séances</div></div>
 ${avgReduction!==null?`<div style="text-align:center"><div style="font-size:1.4rem;font-weight:800;color:${avgReduction>0?"#059669":"#d97706"}">${avgReduction>0?"−":"+"}${Math.abs(avgReduction)}%</div><div style="font-size:.7rem;color:#065f46;font-weight:600">Conv. moy.</div></div>`:""}
-<div style="text-align:center"><div style="font-size:1.4rem;font-weight:800;color:#0369a1">${new Date(linked[linked.length-1]?.date).toLocaleDateString("fr-FR",{day:"numeric",month:"short"})}</div><div style="font-size:.7rem;color:#065f46;font-weight:600">1ère séance</div></div>
-<div style="text-align:center"><div style="font-size:1.4rem;font-weight:800;color:#0369a1">${new Date(linked[0]?.date).toLocaleDateString("fr-FR",{day:"numeric",month:"short"})}</div><div style="font-size:.7rem;color:#065f46;font-weight:600">Dernière</div></div>
 </div>
-${linked.slice(0,5).map(r=>`<div style="padding:10px 12px;background:rgba(255,255,255,.8);border-radius:10px;margin-bottom:6px;cursor:pointer" onclick="state.selected=state.records.find(x=>x.id===${r.id});state.projetDetail=null;setView('detail')">
-<div style="font-size:.7rem;color:var(--text3);font-weight:600;margin-bottom:3px">${new Date(r.date).toLocaleDateString("fr-FR",{day:"numeric",month:"long",year:"numeric"})}</div>
-<div style="font-size:.85rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(r.pensee)}</div>
-<div style="font-size:.75rem;color:${(r.convictionAvant-r.convictionApres)>0?"#059669":"#d97706"};margin-top:2px;font-weight:600">Conviction ${r.convictionAvant}% → ${r.convictionApres}% &nbsp;${(r.convictionAvant-r.convictionApres)>0?"✅":"➡️"}</div>
-</div>`).join("")}
-${linked.length>5?`<div style="font-size:.75rem;color:var(--text3);text-align:center;padding:6px">+${linked.length-5} séance(s) supplémentaire(s) dans l'historique</div>`:""}`}
+${linked.slice(0,5).map(r=>`<div style="padding:10px 12px;background:rgba(255,255,255,.8);border-radius:10px;margin-bottom:6px;cursor:pointer" onclick="state.selected=state.records.find(x=>x.id===${r.id});state.projetDetail=null;setView('detail')"><div style="font-size:.7rem;color:var(--text3);font-weight:600;margin-bottom:3px">${new Date(r.date).toLocaleDateString("fr-FR",{day:"numeric",month:"long"})}</div><div style="font-size:.85rem;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(r.pensee)}</div><div style="font-size:.75rem;color:${(r.convictionAvant-r.convictionApres)>0?"#059669":"#d97706"};margin-top:2px;font-weight:600">Conviction ${r.convictionAvant}% → ${r.convictionApres}%</div></div>`).join("")}`}
 </div>
-
-<div class="card" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;margin-top:4px">
-<div style="font-weight:700;color:#1d4ed8;font-size:.875rem;margin-bottom:12px">💡 Pour avancer sur ce projet</div>
-${p.cat==="cognitif"?`
-<div style="font-size:.875rem;color:#1e3a5f;line-height:1.8;margin-bottom:12px">→ Lance une séance TCC dédiée à cette pensée<br>→ Note 3 preuves contraires dans ton journal chaque semaine<br>→ Relis ta carte de valeur quand la pensée surgit</div>
-<div style="display:flex;flex-wrap:wrap;gap:8px">
-<button class="btn-sm" style="background:var(--sky);color:#fff;border-color:var(--sky)" onclick="state.form=emptyForm();state.form.pensee='${esc(p.titre).replace(/'/g,"\\'")}';state.step='pensee';state.projetDetail=null;setView('new')">➕ Ouvrir en séance TCC</button>
-<button class="btn-sm" onclick="state.projetDetail=null;setView('carte')">🗺️ Voir ma carte de valeur</button>
-</div>`:""}
-${p.cat==="relationnel"?`
-<div style="font-size:.875rem;color:#1e3a5f;line-height:1.8;margin-bottom:12px">→ Cartographie le groupe ou la situation liée<br>→ Prépare des contre-arguments avant chaque interaction<br>→ Travaille l'assertivité par des micro-pratiques</div>
-<div style="display:flex;flex-wrap:wrap;gap:8px">
-<button class="btn-sm" style="background:var(--sky);color:#fff;border-color:var(--sky)" onclick="state.projetDetail=null;state.cartoTab='groupes';setView('cartographie')">👥 Ouvrir Cartographie · Groupes</button>
-<button class="btn-sm" onclick="state.form=emptyForm();state.step='pensee';state.projetDetail=null;setView('new')">➕ Nouvelle séance TCC</button>
-</div>`:""}
-${p.cat==="situation"?`
-<div style="font-size:.875rem;color:#1e3a5f;line-height:1.8;margin-bottom:12px">→ Ouvre la cartographie et complète l'entrée associée<br>→ Lance une séance TCC dédiée à cette situation<br>→ Identifie le besoin non satisfait derrière la réaction</div>
-<div style="display:flex;flex-wrap:wrap;gap:8px">
-<button class="btn-sm" style="background:var(--sky);color:#fff;border-color:var(--sky)" onclick="state.projetDetail=null;state.cartoTab='situations';setView('cartographie')">🧨 Ouvrir Cartographie · Situations</button>
-<button class="btn-sm" onclick="state.form=emptyForm();state.step='pensee';state.projetDetail=null;setView('new')">➕ Nouvelle séance TCC</button>
-</div>`:""}
-${p.cat==="construction"?`
-<div style="font-size:.875rem;color:#1e3a5f;line-height:1.8;margin-bottom:12px">→ Lie ce projet à une habitude dans ton tracker<br>→ Fixe un jalon concret dans les 30 prochains jours<br>→ Écris ce que tu veux pouvoir dire de toi dans 1 an</div>
-<div style="display:flex;flex-wrap:wrap;gap:8px">
-<button class="btn-sm" style="background:var(--sky);color:#fff;border-color:var(--sky)" onclick="state.projetDetail=null;setView('tracker')">📅 Ouvrir le Tracker</button>
-<button class="btn-sm" onclick="state.projetDetail=null;setView('carte')">🗺️ Voir ma carte de valeur</button>
-<button class="btn-sm" onclick="state.form=emptyForm();state.step='pensee';state.projetDetail=null;setView('new')">➕ Nouvelle séance TCC</button>
-</div>`:""}
-${p.cat==="autre"?`
-<div style="font-size:.875rem;color:#1e3a5f;line-height:1.8;margin-bottom:12px">→ Définis une première action concrète pour démarrer<br>→ Reviens régulièrement mesurer ta progression</div>
-<div style="display:flex;flex-wrap:wrap;gap:8px">
-<button class="btn-sm" style="background:var(--sky);color:#fff;border-color:var(--sky)" onclick="state.form=emptyForm();state.step='pensee';state.projetDetail=null;setView('new')">➕ Nouvelle séance TCC</button>
-<button class="btn-sm" onclick="state.projetDetail=null;setView('cartographie')">🧭 Ouvrir Cartographie</button>
-</div>`:""}
-</div>
-
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
 <button class="btn-sm" onclick="state.projetEdit=${p.id};render()">✏️ Modifier</button>
 <button class="btn-sm" onclick="projetCycleStatut(${p.id})">🔄 Changer statut</button>
@@ -1717,20 +1401,15 @@ ${p.cat==="autre"?`
 <button class="btn btn-danger mt12" onclick="projetDelete(${p.id})">🗑️ Supprimer</button>`;
   }
 
-  // List view
   const sf=state.projetFilter;
   const cf=state.projetCatFilter;
   let filtered=state.projets;
   if(sf!=="all")filtered=filtered.filter(p=>p.statut===sf);
   if(cf!=="all")filtered=filtered.filter(p=>p.cat===cf);
-
   const counts={all:state.projets.length};
   PROJET_STATUTS.forEach(s=>{counts[s.key]=state.projets.filter(p=>p.statut===s.key).length;});
-
   const encours=counts["encours"]||0;
   const termine=counts["termine"]||0;
-  const total=state.projets.length;
-  const totalTCC=state.records.length;
 
   return `<button class="back-btn" onclick="setView('home')">← Retour</button>
 <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
@@ -1738,25 +1417,20 @@ ${p.cat==="autre"?`
 <button class="btn-add" onclick="state.projetEdit=0;render()">+ Nouveau</button>
 </div>
 <p class="sub">Tes projets de travail personnels — cognitifs, relationnels, de construction de soi.</p>
-
 <div class="stats-grid-3" style="margin-bottom:14px">
 <div class="stat-card-mini"><div class="stat-val-mid" style="color:var(--sky-deeper)">${encours}</div><div class="stat-label-sm">En cours</div></div>
 <div class="stat-card-mini"><div class="stat-val-mid" style="color:#059669">${termine}</div><div class="stat-label-sm">Terminés</div></div>
-<div class="stat-card-mini"><div class="stat-val-mid" style="color:var(--text3)">${totalTCC}</div><div class="stat-label-sm">Séances TCC</div></div>
+<div class="stat-card-mini"><div class="stat-val-mid" style="color:var(--text3)">${state.records.length}</div><div class="stat-label-sm">Séances TCC</div></div>
 </div>
-
 <div class="projet-filter-row">
 <button class="projet-filter ${sf==="all"?"projet-filter-on":""}" onclick="state.projetFilter='all';render()">Tous (${counts.all})</button>
 ${PROJET_STATUTS.map(s=>`<button class="projet-filter ${sf===s.key?"projet-filter-on":""}" onclick="state.projetFilter='${s.key}';render()">${s.label.split(" ").slice(1).join(" ")} (${counts[s.key]||0})</button>`).join("")}
 </div>
-
 <div class="projet-filter-row">
 <button class="projet-filter ${cf==="all"?"projet-filter-on":""}" onclick="state.projetCatFilter='all';render()">Toutes catégories</button>
 ${PROJET_CATS.map(c=>`<button class="projet-filter ${cf===c.key?"projet-filter-on":""}" onclick="state.projetCatFilter='${c.key}';render()">${c.label}</button>`).join("")}
 </div>
-
 ${filtered.length===0?`<div class="card" style="text-align:center;padding:30px"><p class="sub" style="margin:0">Aucun projet dans ce filtre.</p></div>`:""}
-
 ${filtered.map(p=>{
   const cat=getCatInfo(p.cat);
   const statut=getStatutInfo(p.statut);
@@ -1776,15 +1450,11 @@ ${filtered.map(p=>{
 ${p.desc?`<div class="projet-desc">${esc(p.desc.substring(0,100))}${p.desc.length>100?"…":""}</div>`:""}
 <div class="projet-footer">
 <button class="${statut.cls} projet-statut" onclick="event.stopPropagation();projetCycleStatut(${p.id})">${statut.label} ↻</button>
-<div style="display:flex;gap:6px;align-items:center">
-${tccBadge}
-${p.lien?`<span class="projet-link-badge">🔗 ${esc(p.lien.substring(0,20))}</span>`:""}
-</div>
+<div style="display:flex;gap:6px;align-items:center">${tccBadge}${p.lien?`<span class="projet-link-badge">🔗 ${esc(p.lien.substring(0,20))}</span>`:""}</div>
 </div>
 </div>
 </div>`;
 }).join("")}
-
 <button class="btn btn-secondary mt8" style="border-style:dashed" onclick="state.projetEdit=0;render()">+ Ajouter un projet personnalisé</button>`;
 }
 
@@ -1808,6 +1478,20 @@ function render(){
   app.scrollTop=0;
 }
 render();
+</script>
+
+<script>
+// ============================================================
+// OFFLINE STRATEGY — pas besoin de Service Worker
+// Ce fichier HTML est AUTONOME : zéro dépendance externe.
+// Il suffit de l'enregistrer sur l'appareil (Ctrl+S / Cmd+S)
+// pour l'utiliser sans connexion à vie.
+// Toutes les données sont dans localStorage — elles persistent
+// entre les sessions même hors ligne.
+// ============================================================
+window.addEventListener('online',  function(){ document.getElementById('offlineBanner').style.display='none'; });
+window.addEventListener('offline', function(){ document.getElementById('offlineBanner').style.display='block'; });
+if(!navigator.onLine) document.getElementById('offlineBanner').style.display='block';
 </script>
 </body>
 </html>
