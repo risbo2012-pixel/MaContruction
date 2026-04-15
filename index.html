@@ -202,6 +202,25 @@ select.form-input{cursor:pointer}
 .heatmap-cell{width:18px;height:18px;border-radius:4px;display:inline-block;margin:1px;cursor:pointer;transition:.15s}
 .heatmap-cell:hover{transform:scale(1.2)}
 .week-label{font-size:.65rem;color:var(--text3);width:18px;text-align:center;margin:1px}
+
+/* ===== EXPOSITION TIMER ===== */
+.expo-phase{background:var(--card);border:2px solid var(--border);border-radius:18px;padding:20px;margin-bottom:14px;text-align:center;transition:.3s}
+.expo-phase-active{border-color:var(--sky);background:linear-gradient(135deg,var(--sky-soft),var(--sky-light))}
+.expo-phase-done{border-color:#059669;background:linear-gradient(135deg,#f0fdf4,#dcfce7)}
+.expo-timer{font-size:3.5rem;font-weight:900;color:var(--sky-deeper);line-height:1;margin:12px 0;font-variant-numeric:tabular-nums}
+.expo-timer-done{color:#059669}
+.expo-timer-warning{color:#d97706}
+.expo-step-label{font-size:.8rem;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.expo-instruction{font-size:.95rem;color:var(--text);line-height:1.6;font-style:italic;margin-bottom:12px;min-height:48px}
+.expo-btn{padding:14px 28px;border-radius:14px;border:none;font-size:1rem;font-weight:700;cursor:pointer;transition:.15s;display:inline-block}
+.expo-btn:active{transform:scale(.97)}
+.expo-level-btn{flex:1;padding:14px 8px;border-radius:14px;border:2px solid var(--border);font-weight:700;font-size:.875rem;cursor:pointer;transition:.15s;background:var(--card);text-align:center}
+.expo-level-btn-on{border-color:var(--sky);background:var(--sky-light);color:var(--sky-deeper)}
+.expo-level-btn-off{color:var(--text2)}
+.expo-progress-ring{position:relative;display:inline-block}
+.expo-anx-bar{height:12px;border-radius:99px;background:var(--sky-mid);overflow:hidden;margin:8px 0}
+.expo-anx-fill{height:12px;border-radius:99px;transition:width .5s ease}
+.expo-log-item{background:var(--sky-soft);border:1px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:8px;font-size:.8rem;color:var(--text)}
 </style>
 </head>
 <body>
@@ -542,6 +561,255 @@ function calcDashboard(){
 }
 
 // ============================================================
+// EXPOSITION TIMER ENGINE
+// ============================================================
+
+// Exposition levels: duration in seconds per phase
+const EXPO_LEVELS = [
+  {key:"leger",   label:"🟢 Léger",   color:"#059669", desc:"Observation à distance / court contact",
+   phases:[
+     {label:"Ancrage",      duration:120, instruction:"Ferme les yeux. Pose tes pieds à plat. Respire 4 temps — inspire, retiens, expire, retiens. Tu es en sécurité. Tu choisis d'avancer."},
+     {label:"Préparation",  duration:120, instruction:"Rappelle-toi 3 de tes réussites concrètes. Tu n'es pas défini par ce lieu ou ce groupe. Tu as surmonté bien pire."},
+     {label:"Exposition",   duration:180, instruction:"Entre dans la situation. Observe sans juger. Tu es là, présent. Remarque ce que tu ressens sans y croire."},
+     {label:"Maintien",     duration:120, instruction:"Reste. Respire. L'anxiété atteint toujours un pic puis redescend. Tu n'as pas à fuir."},
+     {label:"Bilan",        duration:60,  instruction:"Comment tu te sens ? Compare avec ce que tu craignais. La réalité était-elle aussi difficile que la prédiction ?"},
+   ]},
+  {key:"modere",  label:"🟡 Modéré",  color:"#d97706", desc:"Contact direct, durée moyenne",
+   phases:[
+     {label:"Ancrage",      duration:180, instruction:"Respiration 4-7-8 : inspire 4 s, retiens 7 s, expire 8 s. Répète 4 fois. Rappelle-toi : tu choisis d'être là."},
+     {label:"Préparation",  duration:180, instruction:"Formule ton contre-argument principal à voix basse. 'Je suis capable — je le prouve chaque jour.' Ancre-toi dans une valeur."},
+     {label:"Exposition",   duration:300, instruction:"Engage-toi dans la situation. Si une pensée automatique surgit, note-la mentalement : 'C'est une distorsion.' Ne la combats pas — observe-la."},
+     {label:"Maintien",     duration:240, instruction:"Tu es encore là. L'anxiété a un sommet. Elle ne monte pas indéfiniment. Reste avec la sensation sans fuir."},
+     {label:"Approfondissement",duration:180, instruction:"Essaie d'interagir ou d'approfondir légèrement. Une phrase, un geste. Petit pas réel."},
+     {label:"Bilan",        duration:90,  instruction:"Cote ton anxiété maintenant de 0 à 10. Compare au début. Qu'est-ce que cette situation t'a appris sur toi ?"},
+   ]},
+  {key:"intensif",label:"🔴 Intensif", color:"#dc2626", desc:"Immersion longue / confrontation directe",
+   phases:[
+     {label:"Ancrage",      duration:300, instruction:"5 minutes de pleine conscience. Scan corporel : pieds, jambes, ventre, poitrine, épaules. Détends chaque zone. Tu as choisi cela."},
+     {label:"Préparation",  duration:240, instruction:"Relis mentalement ta carte de valeur. Tes réussites. Tes forces. Ce groupe ou lieu ne te définit pas. Tu arrives avec tes ressources."},
+     {label:"Exposition 1", duration:300, instruction:"Entre dans la situation. Observe ton niveau d'anxiété sur 10. Reste sans éviter, sans compenser."},
+     {label:"Maintien 1",   duration:300, instruction:"Reste dans la situation. Observe la décrue naturelle de l'anxiété. Elle redescend toujours — c'est de la biologie."},
+     {label:"Exposition 2", duration:300, instruction:"Approfondis l'exposition. Engage davantage. Remarque ce qui se passe réellement, pas ce que la voix prédit."},
+     {label:"Maintien 2",   duration:300, instruction:"Continue. Tu es capable. Chaque minute supplémentaire est une preuve concrète contre la pensée automatique."},
+     {label:"Consolidation",duration:180, instruction:"Avant de partir, fais quelque chose de concret : un geste, une phrase, une action. Termine sur un acte intentionnel."},
+     {label:"Bilan",        duration:120, instruction:"Cote ton anxiété de 0 à 10. Qu'est-ce que tu as appris ? Quelle preuve as-tu maintenant contre la voix intérieure ?"},
+   ]},
+];
+
+// Exposition runtime state
+let expoState = {
+  active: false,
+  item: null,
+  cat: null,
+  level: null,
+  phaseIdx: 0,
+  secondsLeft: 0,
+  totalSeconds: 0,
+  paused: false,
+  done: false,
+  anxieteDebut: 5,
+  anxieteCurrent: 5,
+  log: [],         // {phase, anxiete, note, ts}
+  intervalId: null,
+};
+
+function expoStart(cat, itemId, levelKey) {
+  const items = state.carto[cat] || [];
+  const item = items.find(i => i.id === itemId);
+  const level = EXPO_LEVELS.find(l => l.key === levelKey);
+  if (!item || !level) return;
+  if (expoState.intervalId) clearInterval(expoState.intervalId);
+  expoState = {
+    active: true, item, cat, level,
+    phaseIdx: 0,
+    secondsLeft: level.phases[0].duration,
+    totalSeconds: level.phases[0].duration,
+    paused: false, done: false,
+    anxieteDebut: 5, anxieteCurrent: 5,
+    log: [], intervalId: null,
+  };
+  expoState.intervalId = setInterval(expoTick, 1000);
+  state.view = 'exposition';
+  render();
+}
+
+function expoTick() {
+  if (expoState.paused || expoState.done) return;
+  expoState.secondsLeft--;
+  if (expoState.secondsLeft <= 0) {
+    // Move to next phase
+    expoState.log.push({
+      phase: expoState.level.phases[expoState.phaseIdx].label,
+      anxiete: expoState.anxieteCurrent,
+      ts: new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'}),
+    });
+    expoState.phaseIdx++;
+    if (expoState.phaseIdx >= expoState.level.phases.length) {
+      expoState.done = true;
+      clearInterval(expoState.intervalId);
+      expoState.intervalId = null;
+    } else {
+      const next = expoState.level.phases[expoState.phaseIdx];
+      expoState.secondsLeft = next.duration;
+      expoState.totalSeconds = next.duration;
+    }
+  }
+  render();
+}
+
+function expoPause() {
+  expoState.paused = !expoState.paused;
+  render();
+}
+
+function expoStop() {
+  if (expoState.intervalId) clearInterval(expoState.intervalId);
+  expoState.active = false;
+  expoState.done = false;
+  state.view = 'cartographie';
+  render();
+}
+
+function expoNextPhase() {
+  if (expoState.phaseIdx >= expoState.level.phases.length - 1) return;
+  expoState.log.push({
+    phase: expoState.level.phases[expoState.phaseIdx].label,
+    anxiete: expoState.anxieteCurrent,
+    ts: new Date().toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'}),
+  });
+  expoState.phaseIdx++;
+  const next = expoState.level.phases[expoState.phaseIdx];
+  expoState.secondsLeft = next.duration;
+  expoState.totalSeconds = next.duration;
+  render();
+}
+
+function expoSetAnxiete(val) {
+  expoState.anxieteCurrent = val;
+  render();
+}
+
+function expoSaveAndClose() {
+  // Save the exposition as a note in carto item commentaire
+  const finalNote = `[Exposition ${new Date().toLocaleDateString('fr-FR')} — ${expoState.level.label}] Anxiété début: ${expoState.anxieteDebut}/10 → fin: ${expoState.anxieteCurrent}/10`;
+  const cat = expoState.cat;
+  const itemId = expoState.item.id;
+  const items = state.carto[cat] || [];
+  const idx = items.findIndex(i => i.id === itemId);
+  if (idx >= 0) {
+    const prev = items[idx].commentaire || '';
+    items[idx].commentaire = prev ? prev + '\n' + finalNote : finalNote;
+    saveCarto();
+  }
+  if (expoState.intervalId) clearInterval(expoState.intervalId);
+  expoState.active = false;
+  state.cartoDetail = {cat, id: itemId};
+  state.view = 'cartographie';
+  render();
+}
+
+function formatTime(s) {
+  const m = Math.floor(s / 60);
+  const sec = s % 60;
+  return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
+}
+
+function renderExposition() {
+  const {item, level, phaseIdx, secondsLeft, totalSeconds, paused, done, anxieteDebut, anxieteCurrent, log} = expoState;
+  const phase = level.phases[phaseIdx] || level.phases[level.phases.length-1];
+  const pct = Math.round((1 - secondsLeft/totalSeconds)*100);
+  const totalPhases = level.phases.length;
+  const isLastPhase = phaseIdx === totalPhases - 1;
+  const timeColor = secondsLeft <= 30 ? 'var(--orange)' : secondsLeft <= 10 ? 'var(--red)' : 'var(--sky-deeper)';
+  const anxColor = anxieteCurrent >= 8 ? '#dc2626' : anxieteCurrent >= 6 ? '#d97706' : anxieteCurrent >= 4 ? '#0ea5e9' : '#059669';
+
+  if (done) {
+    const reduction = anxieteDebut - anxieteCurrent;
+    return `
+<div style="text-align:center;margin-bottom:20px">
+<div style="font-size:2.5rem;margin-bottom:8px">✅</div>
+<h2 style="color:#059669;margin-bottom:4px">Exposition terminée !</h2>
+<p class="sub" style="margin:0">${level.label} — ${item.titre}</p>
+</div>
+
+<div class="card" style="background:linear-gradient(135deg,#f0fdf4,#dcfce7);border-color:#6ee7b7;text-align:center;margin-bottom:14px">
+<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px">
+<div><div style="font-size:1.8rem;font-weight:900;color:#059669">${anxieteDebut}/10</div><div style="font-size:.72rem;color:#065f46;font-weight:600">Anxiété début</div></div>
+<div><div style="font-size:1.8rem;font-weight:900;color:${reduction>0?'#059669':'#d97706'}">${reduction>0?'−':'+'}${Math.abs(reduction)}</div><div style="font-size:.72rem;color:#065f46;font-weight:600">Réduction</div></div>
+<div><div style="font-size:1.8rem;font-weight:900;color:${anxColor}">${anxieteCurrent}/10</div><div style="font-size:.72rem;color:#065f46;font-weight:600">Anxiété fin</div></div>
+</div>
+</div>
+
+${log.length>0?`<div class="card" style="margin-bottom:14px">
+<div style="font-weight:700;color:var(--sky-deeper);margin-bottom:10px;font-size:.875rem">📋 Journal de séance</div>
+${log.map(l=>`<div class="expo-log-item"><span style="font-weight:700;color:var(--sky-deeper)">${l.phase}</span> <span style="color:var(--text3);font-size:.72rem">${l.ts}</span> — Anxiété : <strong style="color:${l.anxiete>=7?'#dc2626':l.anxiete>=5?'#d97706':'#059669'}">${l.anxiete}/10</strong></div>`).join('')}
+</div>`:''}
+
+<div class="card" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd;margin-bottom:14px">
+<div style="font-weight:700;color:#1d4ed8;margin-bottom:8px;font-size:.875rem">💡 Ce que cette séance prouve</div>
+<p style="font-size:.875rem;color:#1e3a5f;line-height:1.6">Tu as tenu ${totalPhases} phase${totalPhases>1?'s':''} face à ce déclencheur. ${reduction>0?`Ton anxiété a baissé de <strong>${reduction} points</strong> — preuve concrète que le cerveau s'adapte.`:'Tu as tenu malgré l\'anxiété — c\'est déjà une victoire.'} Ajoute cela à ta carte de valeur.</p>
+</div>
+
+<button class="btn btn-success mb12" onclick="expoSaveAndClose()">💾 Sauvegarder & Retour</button>
+<button class="btn btn-secondary" onclick="expoStop()">Retour sans sauvegarder</button>`;
+  }
+
+  return `
+<div style="display:flex;align-items:center;gap:10px;margin-bottom:16px">
+<button onclick="expoStop()" style="background:none;border:none;color:var(--text2);font-size:.875rem;cursor:pointer;font-weight:600;padding:0;display:flex;align-items:center;gap:4px">← Arrêter</button>
+<div style="flex:1;text-align:right;font-size:.75rem;color:var(--text3);font-weight:600">${level.label} · ${item.titre.length>25?item.titre.substring(0,25)+'…':item.titre}</div>
+</div>
+
+<!-- Phase progress dots -->
+<div style="display:flex;gap:6px;justify-content:center;margin-bottom:16px">
+${level.phases.map((_,i)=>`<div style="width:${i===phaseIdx?28:10}px;height:10px;border-radius:99px;background:${i<phaseIdx?'#059669':i===phaseIdx?level.color:'var(--sky-mid)'};transition:.3s"></div>`).join('')}
+</div>
+
+<!-- Main timer card -->
+<div class="expo-phase ${paused?'':'expo-phase-active'}" style="border-color:${level.color}20;background:linear-gradient(135deg,${level.color}08,${level.color}14)">
+<div class="expo-step-label" style="color:${level.color}">${phase.label} · Phase ${phaseIdx+1}/${totalPhases}</div>
+
+<!-- Circular-style timer -->
+<div style="position:relative;display:inline-block;margin:8px 0">
+<svg width="140" height="140" viewBox="0 0 140 140">
+<circle cx="70" cy="70" r="60" fill="none" stroke="var(--sky-mid)" stroke-width="8"/>
+<circle cx="70" cy="70" r="60" fill="none" stroke="${level.color}" stroke-width="8"
+  stroke-dasharray="${Math.PI*2*60}" stroke-dashoffset="${Math.PI*2*60*(1-pct/100)}"
+  stroke-linecap="round" transform="rotate(-90 70 70)" style="transition:stroke-dashoffset .9s linear"/>
+</svg>
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+<div style="font-size:2.2rem;font-weight:900;color:${timeColor};font-variant-numeric:tabular-nums;line-height:1">${formatTime(secondsLeft)}</div>
+<div style="font-size:.65rem;color:var(--text3);font-weight:600;margin-top:2px">${paused?'EN PAUSE':'EN COURS'}</div>
+</div>
+</div>
+
+<div class="expo-instruction">${phase.instruction}</div>
+</div>
+
+<!-- Anxiété slider -->
+<div class="card" style="padding:14px;margin-bottom:14px">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+<span style="font-size:.8rem;font-weight:700;color:var(--text2)">😰 Anxiété ressentie</span>
+<span style="font-size:1.1rem;font-weight:800;color:${anxColor}">${anxieteCurrent}/10</span>
+</div>
+<div class="expo-anx-bar"><div class="expo-anx-fill" style="width:${anxieteCurrent*10}%;background:${anxColor}"></div></div>
+<input type="range" min="0" max="10" value="${anxieteCurrent}" oninput="expoSetAnxiete(+this.value)" style="margin:4px 0"/>
+<div style="display:flex;justify-content:space-between;font-size:.65rem;color:var(--text3)"><span>0 — Calme</span><span>10 — Intense</span></div>
+</div>
+
+<!-- Controls -->
+<div style="display:flex;gap:10px;margin-bottom:14px">
+<button class="btn ${paused?'btn-primary':'btn-secondary'}" onclick="expoPause()" style="flex:1">${paused?'▶ Reprendre':'⏸ Pause'}</button>
+${!isLastPhase?`<button class="btn btn-secondary" onclick="expoNextPhase()" style="flex:1">Phase suivante →</button>`:''}
+</div>
+
+${log.length>0?`<div class="dash-card" style="padding:12px">
+<div style="font-size:.75rem;font-weight:700;color:var(--text2);margin-bottom:8px">📋 Phases complétées</div>
+${log.map(l=>`<div class="expo-log-item"><span style="font-weight:700">${l.phase}</span> <span style="color:var(--text3);font-size:.7rem">${l.ts}</span> — Anxiété : <strong style="color:${l.anxiete>=7?'#dc2626':l.anxiete>=5?'#d97706':'#059669'}">${l.anxiete}/10</strong></div>`).join('')}
+</div>`:''}`;
+}
+
+// ============================================================
 // AI
 // ============================================================
 async function callAI(prompt){
@@ -739,6 +1007,7 @@ ${item.commentaire?`<div class="carto-detail-field"><span class="carto-detail-la
 <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
 <button class="btn-sm" onclick="state.cartoEdit={cat:'${cat}',id:${id}};state.cartoAIResult=null;render()">✏️ Modifier</button>
 ${item.pensee?`<button class="btn-sm" onclick="state.form=emptyForm();state.form.pensee='${item.pensee.replace(/'/g,"\\'")}';state.step='pensee';state.cartoDetail=null;setView('new')">🔄 Ouvrir en séance TCC</button>`:""}
+${'lieux groupes situations'.includes(cat)?`<button class="btn-sm" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);color:#fff;border-color:#7c3aed" onclick="state.expoSetup={cat:'${cat}',id:${id}};state.view='expo_setup';render()">⏱️ Explorer avec timing</button>`:''}
 </div>
 <div class="card" style="background:linear-gradient(135deg,#eff6ff,#dbeafe);border-color:#93c5fd">
 <div style="font-weight:700;color:#1d4ed8;margin-bottom:8px;font-size:.875rem">✦ Analyse IA de cette entrée</div>
@@ -1458,6 +1727,61 @@ ${p.desc?`<div class="projet-desc">${esc(p.desc.substring(0,100))}${p.desc.lengt
 <button class="btn btn-secondary mt8" style="border-style:dashed" onclick="state.projetEdit=0;render()">+ Ajouter un projet personnalisé</button>`;
 }
 
+function renderExpoSetup() {
+  const {cat, id} = state.expoSetup || {};
+  const items = state.carto[cat] || [];
+  const item = items.find(i => i.id === id);
+  if (!item) return '';
+  const catInfo = CARTO_CATS.find(c => c.key === cat);
+  const sel = state.expoLevelSel || 'leger';
+
+  return `<button class="back-btn" onclick="state.view='cartographie';state.cartoDetail={cat:'${cat}',id:${id}};render()">← Retour</button>
+<h2>⏱️ Explorer avec timing</h2>
+<div class="card2" style="margin-bottom:16px">
+<div style="font-size:.75rem;color:var(--text2);font-weight:700;margin-bottom:4px">${catInfo.icon} ${catInfo.label.split(' ').slice(1).join(' ')}</div>
+<div style="font-weight:800;color:var(--text);font-size:1rem">${esc(item.titre)}</div>
+${item.emotions?`<div style="font-size:.8rem;color:var(--text3);margin-top:4px">❤️ ${esc(item.emotions)}</div>`:''}
+</div>
+
+<p class="sub">L'exposition graduelle avec timing est une technique TCC validée : rester volontairement dans une situation anxiogène jusqu'à ce que l'anxiété redescende naturellement. Choisis ton niveau :</p>
+
+<div style="display:flex;flex-direction:column;gap:10px;margin-bottom:20px">
+${EXPO_LEVELS.map(l=>`
+<div class="expo-level-btn ${sel===l.key?'expo-level-btn-on':'expo-level-btn-off'}" onclick="state.expoLevelSel='${l.key}';render()" style="text-align:left;padding:16px">
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px">
+<span style="font-weight:800;font-size:.95rem">${l.label}</span>
+<span style="font-size:.75rem;color:var(--text3);font-weight:600">${Math.round(l.phases.reduce((a,p)=>a+p.duration,0)/60)} min</span>
+</div>
+<div style="font-size:.8rem;color:var(--text3);margin-bottom:8px">${l.desc}</div>
+<div style="display:flex;flex-wrap:wrap;gap:4px">
+${l.phases.map(p=>`<span style="font-size:.68rem;background:${l.color}18;color:${l.color};padding:3px 8px;border-radius:99px;font-weight:700">${p.label} ${Math.round(p.duration/60)}min</span>`).join('')}
+</div>
+</div>`).join('')}
+</div>
+
+<div class="card" style="background:#fef9c3;border-color:#fde047;margin-bottom:16px;padding:14px">
+<div style="font-size:.8rem;color:#713f12;line-height:1.6">
+⚠️ <strong>Avant de commencer :</strong> Cette technique est puissante mais exigeante. Si tu ressens une détresse intense, tu peux appuyer sur Pause ou Arrêter à tout moment. Il n'y a pas d'échec — chaque tentative est un apprentissage.
+</div>
+</div>
+
+<div style="margin-bottom:16px">
+<span class="label">📊 Anxiété de départ estimée</span>
+<div style="display:flex;align-items:center;gap:12px">
+<input type="range" min="0" max="10" value="${state.expoAnxDebut||5}" oninput="state.expoAnxDebut=+this.value;document.getElementById('anxDebutVal').textContent=this.value+'/10'" style="flex:1"/>
+<span id="anxDebutVal" style="font-size:1rem;font-weight:800;color:var(--sky-deeper);white-space:nowrap">${state.expoAnxDebut||5}/10</span>
+</div>
+</div>
+
+<button class="btn btn-primary" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);box-shadow:0 4px 14px rgba(124,58,237,.3)" onclick="expoLaunch('${cat}',${id},'${sel}',${state.expoAnxDebut||5})">▶ Démarrer l'exposition</button>`;
+}
+
+function expoLaunch(cat, id, levelKey, anxDebut) {
+  expoStart(cat, id, levelKey);
+  expoState.anxieteDebut = anxDebut;
+  expoState.anxieteCurrent = anxDebut;
+}
+
 // ============================================================
 // MAIN RENDER
 // ============================================================
@@ -1474,6 +1798,8 @@ function render(){
   else if(state.view==="tracker")html=renderTrackerView();
   else if(state.view==="cartographie")html=renderCartographie();
   else if(state.view==="projets")html=renderProjets();
+  else if(state.view==="exposition")html=renderExposition();
+  else if(state.view==="expo_setup")html=renderExpoSetup();
   app.innerHTML=html;
   app.scrollTop=0;
 }
